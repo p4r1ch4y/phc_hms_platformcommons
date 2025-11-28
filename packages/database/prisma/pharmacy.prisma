@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/pharmacy-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id            String         @id @default(uuid())
+  firstName     String
+  lastName      String
+  dateOfBirth   DateTime
+  gender        Gender
+  phone         String?
+  address       String?
+  abhaId        String?        @unique
+  vitals        Vitals[]
+  consultations Consultation[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Vitals {
+  id            String   @id @default(uuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id])
+  temperature   Float?
+  bloodPressure String?
+  pulse         Int?
+  weight        Float?
+  height        Float?
+  bloodSugar    Float?
+  recordedBy    String
+  recordedAt    DateTime @default(now())
+}
+
+model Consultation {
+  id            String   @id @default(uuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id])
+  doctorId      String
+  diagnosis     String?
+  prescription  String?
+  status        ConsultationStatus @default(PENDING)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ConsultationStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Medicine {
+  id                String   @id @default(uuid())
+  name              String
+  manufacturer      String?
+  unit              String
+  lowStockThreshold Int      @default(10)
+  batches           Batch[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Batch {
+  id          String   @id @default(uuid())
+  medicineId  String
+  medicine    Medicine @relation(fields: [medicineId], references: [id])
+  batchNumber String
+  expiryDate  DateTime
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

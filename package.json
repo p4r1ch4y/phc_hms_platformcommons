@@ -1,0 +1,23 @@
+{
+    "name": "phc-platform-commons",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "test": "npm test --workspaces",
+        "dev": "concurrently \"npm:dev -w apps/api-gateway\" \"npm:dev -w apps/auth-service\" \"npm:dev -w apps/tenant-service\" \"npm:dev -w apps/patient-service\" \"npm:dev -w apps/consultation-service\"",
+        "build": "npm run build --workspaces"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "eslint": "^8.56.0",
+        "prettier": "^3.2.5",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "pg": "^8.16.3"
+    }
+}

@@ -1,0 +1,24 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import pharmacyRoutes from './routes/pharmacy.routes';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3005;
+
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/pharmacy', pharmacyRoutes);
+
+// Health check
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', service: 'pharmacy-service' });
+});
+
+app.listen(PORT, () => {
+    console.log(`Pharmacy Service running on port ${PORT}`);
+});
