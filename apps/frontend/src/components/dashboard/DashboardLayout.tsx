@@ -16,6 +16,7 @@ import {
 
 const DashboardLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -35,6 +36,12 @@ const DashboardLayout = () => {
         { name: 'Reports', href: '/dashboard/reports', icon: FileText },
         { name: 'Settings', href: '/dashboard/settings', icon: Settings },
     ];
+
+    // Add Staff Management for Admins
+    if (user.role === 'HOSPITAL_ADMIN' || user.role === 'SUPER_ADMIN') {
+        // Insert before Settings
+        navigation.splice(navigation.length - 1, 0, { name: 'Staff', href: '/dashboard/staff', icon: Users });
+    }
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans flex">
@@ -74,8 +81,8 @@ const DashboardLayout = () => {
                                 key={item.name}
                                 to={item.href}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive
-                                        ? 'bg-primary-50 text-primary-700'
-                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                    ? 'bg-primary-50 text-primary-700'
+                                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                                     }`}
                             >
                                 <item.icon className={`h-5 w-5 ${isActive ? 'text-primary-600' : 'text-slate-400'}`} />
@@ -132,7 +139,10 @@ const DashboardLayout = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                        <button
+                            onClick={() => setNotificationsOpen(!notificationsOpen)}
+                            className={`relative p-2 transition-colors ${notificationsOpen ? 'text-primary-600 bg-primary-50 rounded-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
                             <Bell className="h-6 w-6" />
                             <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>
                         </button>

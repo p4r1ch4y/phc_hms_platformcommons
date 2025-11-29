@@ -2,16 +2,140 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:16-alpine
-    container_name: phc_postgres
+    image: postgres:15-alpine
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: phc_hms
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - phc-network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - TENANT_SERVICE_URL=http://tenant-service:3002
+      - PATIENT_SERVICE_URL=http://patient-service:3003
+      - CONSULTATION_SERVICE_URL=http://consultation-service:3004
+      - PHARMACY_SERVICE_URL=http://pharmacy-service:3005
+    depends_on:
+      - auth-service
+      - tenant-service
+      - patient-service
+      - consultation-service
+      - pharmacy-service
+    networks:
+      - phc-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: apps/auth-service/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phc-network
+
+  tenant-service:
+    build:
+      context: .
+      dockerfile: apps/tenant-service/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phc-network
+
+  patient-service:
+    build:
+      context: .
+      dockerfile: apps/patient-service/Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phc-network
+
+  consultation-service:
+    build:
+      context: .
+      dockerfile: apps/consultation-service/Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phc-network
+
+  pharmacy-service:
+    build:
+      context: .
+      dockerfile: apps/pharmacy-service/Dockerfile
+    ports:
+      - "3005:3005"
+    environment:
+      - PORT=3005
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phc-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - phc-network
 
 volumes:
   postgres_data:
+
+
+networks:
+  phc-network:
+    driver: bridge

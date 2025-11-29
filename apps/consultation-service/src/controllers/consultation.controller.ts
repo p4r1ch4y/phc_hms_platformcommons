@@ -104,7 +104,28 @@ export const getConsultationStats = async (req: Request, res: Response) => {
             }
         });
 
-        res.json({ todayConsultations, pendingConsultations });
+        // Top Diagnoses
+        const diagnosisStats = await client.consultation.groupBy({
+            by: ['diagnosis'],
+            _count: {
+                diagnosis: true
+            },
+            where: {
+                diagnosis: { not: null }
+            },
+            orderBy: {
+                _count: {
+                    diagnosis: 'desc'
+                }
+            },
+            take: 5
+        });
+
+        res.json({
+            todayConsultations,
+            pendingConsultations,
+            topDiagnoses: diagnosisStats.map(d => ({ name: d.diagnosis, value: d._count.diagnosis }))
+        });
     } catch (error) {
         console.error('Get consultation stats error:', error);
         res.status(500).json({ message: 'Internal server error' });

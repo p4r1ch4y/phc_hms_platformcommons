@@ -8,7 +8,7 @@
     ],
     "scripts": {
         "test": "npm test --workspaces",
-        "dev": "concurrently \"npm:dev -w apps/api-gateway\" \"npm:dev -w apps/auth-service\" \"npm:dev -w apps/tenant-service\" \"npm:dev -w apps/patient-service\" \"npm:dev -w apps/consultation-service\"",
+        "dev": "concurrently \"npm:dev -w apps/api-gateway\" \"npm:dev -w apps/auth-service\" \"npm:dev -w apps/tenant-service\" \"npm:dev -w apps/patient-service\" \"npm:dev -w apps/consultation-service\" \"npm:dev -w apps/pharmacy-service\" \"npm:dev -w apps/frontend\"",
         "build": "npm run build --workspaces"
     },
     "devDependencies": {

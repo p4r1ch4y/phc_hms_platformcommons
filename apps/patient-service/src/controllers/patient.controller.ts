@@ -166,7 +166,41 @@ export const getPatientStats = async (req: Request, res: Response) => {
             }
         });
 
-        res.json({ totalPatients, newPatients });
+        // Gender Distribution
+        const genderStats = await client.patient.groupBy({
+            by: ['gender'],
+            _count: {
+                gender: true
+            }
+        });
+
+        // Age Distribution (Simplified)
+        const patients = await client.patient.findMany({
+            select: { dateOfBirth: true }
+        });
+
+        const ageGroups: Record<string, number> = {
+            '0-12': 0,
+            '13-18': 0,
+            '19-60': 0,
+            '60+': 0
+        };
+
+        const now = new Date();
+        patients.forEach(p => {
+            const age = now.getFullYear() - p.dateOfBirth.getFullYear();
+            if (age <= 12) ageGroups['0-12']++;
+            else if (age <= 18) ageGroups['13-18']++;
+            else if (age <= 60) ageGroups['19-60']++;
+            else ageGroups['60+']++;
+        });
+
+        res.json({
+            totalPatients,
+            newPatients,
+            genderDistribution: genderStats.map(g => ({ name: g.gender, value: g._count.gender })),
+            ageDistribution: Object.entries(ageGroups).map(([name, value]) => ({ name, value }))
+        });
     } catch (error) {
         console.error('Get patient stats error:', error);
         res.status(500).json({ message: 'Internal server error' });

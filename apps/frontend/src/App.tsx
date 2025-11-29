@@ -14,6 +14,10 @@ import AddMedicine from './pages/dashboard/pharmacy/AddMedicine';
 import StaffList from './pages/dashboard/staff/StaffList';
 import AddStaff from './pages/dashboard/staff/AddStaff';
 
+import Reports from './pages/dashboard/reports/Reports';
+
+import Settings from './pages/dashboard/settings/Settings';
+
 function App() {
   return (
     <Router>
@@ -32,8 +36,8 @@ function App() {
           <Route path="pharmacy/new" element={<AddMedicine />} />
           <Route path="staff" element={<StaffList />} />
           <Route path="staff/new" element={<AddStaff />} />
-          <Route path="reports" element={<div>Reports Placeholder</div>} />
-          <Route path="settings" element={<div>Settings Placeholder</div>} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </Router>

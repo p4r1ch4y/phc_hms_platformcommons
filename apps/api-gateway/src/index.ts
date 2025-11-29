@@ -5,7 +5,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
-dotenv.config();
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../../../packages/database/.env') });
 
 const app = express();
 const port = process.env.PORT || 3000;

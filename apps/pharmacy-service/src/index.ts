@@ -3,7 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import pharmacyRoutes from './routes/pharmacy.routes';
 
-dotenv.config();
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../../../packages/database/.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3005;
