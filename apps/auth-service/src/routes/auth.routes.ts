@@ -8,7 +8,8 @@ import {
     StaffSchema,
     authRateLimiter,
     registrationRateLimiter,
-    writeRateLimiter
+    writeRateLimiter,
+    apiRateLimiter
 } from '@phc/common';
 
 const router = Router();
@@ -17,8 +18,8 @@ const router = Router();
 router.post('/register', registrationRateLimiter, register);
 router.post('/login', authRateLimiter, validateBody(LoginSchema), login);
 
-// Protected routes with write rate limiting
-router.post('/staff', authenticate, authorize(['HOSPITAL_ADMIN', 'SUPER_ADMIN']), writeRateLimiter, validateBody(StaffSchema), createStaff);
-router.get('/staff', authenticate, authorize(['HOSPITAL_ADMIN', 'SUPER_ADMIN']), getStaff);
+// Protected routes with rate limiting applied before auth
+router.post('/staff', writeRateLimiter, authenticate, authorize(['HOSPITAL_ADMIN', 'SUPER_ADMIN']), validateBody(StaffSchema), createStaff);
+router.get('/staff', apiRateLimiter, authenticate, authorize(['HOSPITAL_ADMIN', 'SUPER_ADMIN']), getStaff);
 
 export default router;
