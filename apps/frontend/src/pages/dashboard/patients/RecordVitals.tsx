@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Activity, Heart, Thermometer, Scale, Ruler, Droplet } from 'lucide-react';
 import api from '../../../api/client';
+import { VoiceInput } from '../../../components/ui/VoiceInput';
 import { calculateRisk, RiskLevel, type RiskAssessment } from '../../../utils/triage';
 
 const RecordVitals = () => {
@@ -16,7 +17,9 @@ const RecordVitals = () => {
         pulse: '',
         weight: '',
         height: '',
-        bloodSugar: ''
+        height: '',
+        bloodSugar: '',
+        triageNote: ''
     });
 
     useEffect(() => {
@@ -77,6 +80,7 @@ const RecordVitals = () => {
                 weight: parseFloat(formData.weight),
                 height: parseFloat(formData.height),
                 bloodSugar: parseFloat(formData.bloodSugar),
+                triageNote: formData.triageNote
             });
             navigate('/dashboard/patients');
         } catch (err: any) {
@@ -211,6 +215,21 @@ const RecordVitals = () => {
                                         placeholder="170"
                                     />
                                 </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center justify-between">
+                                    Clinical Observations / Triage Notes
+                                    <VoiceInput onTranscript={(text) => setFormData(prev => ({ ...prev, triageNote: prev.triageNote + (prev.triageNote ? ' ' : '') + text }))} />
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    name="triageNote"
+                                    value={formData.triageNote}
+                                    onChange={(e) => setFormData({ ...formData, triageNote: e.target.value })}
+                                    className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                                    placeholder="Additional observations..."
+                                />
                             </div>
 
                             <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">

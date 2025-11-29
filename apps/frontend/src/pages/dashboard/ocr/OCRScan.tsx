@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ArrowRight, UserPlus, FilePlus } from 'lucide-react';
-import OCRUploader from '../../../components/ui/OCRUploader';
+import { OCRUploader } from '../../../components/ui/OCRUploader';
 
 const OCRScan = () => {
     const navigate = useNavigate();

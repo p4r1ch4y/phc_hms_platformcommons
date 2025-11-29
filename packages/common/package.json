@@ -2,6 +2,10 @@
     "name": "@phc/common",
     "version": "1.0.0",
     "main": "index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
     "dependencies": {
         "zod": "^3.22.4",
         "jsonwebtoken": "^9.0.2",
