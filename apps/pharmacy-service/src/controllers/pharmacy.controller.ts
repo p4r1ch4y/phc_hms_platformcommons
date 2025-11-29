@@ -82,8 +82,8 @@ export const getInventory = async (req: Request, res: Response) => {
         });
 
         // Calculate total stock and status for each medicine
-        const processedInventory = inventory.map(med => {
-            const totalStock = med.batches.reduce((sum, batch) => sum + batch.quantity, 0);
+        const processedInventory = inventory.map((med: any) => {
+            const totalStock = med.batches.reduce((sum: number, batch: any) => sum + batch.quantity, 0);
             let status = 'IN_STOCK';
             if (totalStock === 0) status = 'OUT_OF_STOCK';
             else if (totalStock < med.lowStockThreshold) status = 'LOW_STOCK';
@@ -121,13 +121,13 @@ export const getLowStockMedicines = async (req: Request, res: Response) => {
         });
 
         // Filter for low stock
-        const lowStockMedicines = inventory.map(med => {
-            const totalStock = med.batches.reduce((sum, batch) => sum + batch.quantity, 0);
+        const lowStockMedicines = inventory.map((med: any) => {
+            const totalStock = med.batches.reduce((sum: number, batch: any) => sum + batch.quantity, 0);
             return {
                 ...med,
                 totalStock
             };
-        }).filter(med => med.totalStock <= med.lowStockThreshold);
+        }).filter((med: any) => med.totalStock <= med.lowStockThreshold);
 
         res.json(lowStockMedicines);
     } catch (error) {

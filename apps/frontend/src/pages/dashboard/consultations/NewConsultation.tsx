@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Search, User, Stethoscope, Pill, Globe } from 'lucide-react';
 import api from '../../../api/client';
+import { VoiceInput } from '../../../components/ui/VoiceInput';
 
 interface Patient {
     id: string;
@@ -227,10 +228,15 @@ const NewConsultation = () => {
                                 </div>
                             )}
 
+
+
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-                                    <Stethoscope className="h-4 w-4 text-slate-400" />
-                                    Diagnosis / Symptoms
+                                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center justify-between">
+                                    <span className="flex items-center gap-2">
+                                        <Stethoscope className="h-4 w-4 text-slate-400" />
+                                        Diagnosis / Symptoms
+                                    </span>
+                                    <VoiceInput onTranscript={(text) => setFormData(prev => ({ ...prev, diagnosis: prev.diagnosis + (prev.diagnosis ? ' ' : '') + text }))} />
                                 </label>
                                 <textarea
                                     rows={3}
@@ -258,8 +264,9 @@ const NewConsultation = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center justify-between">
                                     Clinical Notes
+                                    <VoiceInput onTranscript={(text) => setFormData(prev => ({ ...prev, notes: prev.notes + (prev.notes ? ' ' : '') + text }))} />
                                 </label>
                                 <textarea
                                     rows={2}
