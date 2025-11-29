@@ -13,7 +13,7 @@ const getJwtSecret = (): string => {
     return secret;
 };
 
-const JWT_SECRET = getJwtSecret();
+// const JWT_SECRET = getJwtSecret();
 
 export interface TokenPayload {
     userId: string;
@@ -23,9 +23,9 @@ export interface TokenPayload {
 }
 
 export const signToken = (payload: TokenPayload): string => {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
+    return jwt.sign(payload, getJwtSecret(), { expiresIn: '24h' });
 };
 
 export const verifyToken = (token: string): TokenPayload => {
-    return jwt.verify(token, JWT_SECRET) as TokenPayload;
+    return jwt.verify(token, getJwtSecret()) as TokenPayload;
 };

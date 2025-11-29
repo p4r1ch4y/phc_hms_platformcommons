@@ -127,9 +127,9 @@ const Patients = () => {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <button className="p-1 text-slate-400 hover:text-primary-600 transition-colors" title="View Details">
+                                                <Link to={`/dashboard/patients/${patient.id}`} className="p-1 text-slate-400 hover:text-primary-600 transition-colors" title="View Details">
                                                     <FileText className="h-4 w-4" />
-                                                </button>
+                                                </Link>
                                                 <Link
                                                     to={`/dashboard/patients/${patient.id}/vitals`}
                                                     className="p-1 text-slate-400 hover:text-primary-600 transition-colors"

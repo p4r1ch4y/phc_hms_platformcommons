@@ -99,6 +99,87 @@ export const searchGlobal = async (req: Request, res: Response) => {
     }
 };
 
+export const updatePatient = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        console.log('Update Patient Request:', { id, body: req.body });
+        const { firstName, lastName, dateOfBirth, gender, phone, address, abhaId } = req.body;
+        const tenantSlug = req.headers['x-tenant-slug'] as string;
+
+        if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
+
+        const client = getTenantClient(tenantSlug);
+
+        // Check if patient exists
+        const existingPatient = await client.patient.findUnique({ where: { id } });
+        if (!existingPatient) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+
+        const updatedPatient = await client.patient.update({
+            where: { id },
+            data: {
+                firstName,
+                lastName,
+                dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+                gender,
+                phone,
+                address,
+                abhaId
+            }
+        });
+
+        // Sync to Global Registry if ABHA ID changed
+        if (abhaId && abhaId !== existingPatient.abhaId) {
+            try {
+                await managementClient.patientRegistry.updateMany({
+                    where: { patientId: id },
+                    data: { abhaId }
+                });
+            } catch (registryError) {
+                console.error('Failed to sync update to Patient Registry:', registryError);
+            }
+        }
+
+        res.json(updatedPatient);
+    } catch (error) {
+        console.error('Update patient error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const getPatient = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const tenantSlug = req.headers['x-tenant-slug'] as string;
+        if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
+
+        const client = getTenantClient(tenantSlug);
+        const patient = await client.patient.findUnique({
+            where: { id },
+            include: {
+                vitals: {
+                    orderBy: { recordedAt: 'desc' },
+                    take: 10
+                },
+                consultations: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 10
+                }
+            }
+        });
+
+        if (!patient) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+
+        res.json(patient);
+    } catch (error) {
+        console.error('Get patient error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 export const listPatients = async (req: Request, res: Response) => {
     try {
         const tenantSlug = req.headers['x-tenant-slug'] as string;
@@ -214,6 +295,58 @@ export const getPatientStats = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error('Get patient stats error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+export const getHighRiskPatients = async (req: Request, res: Response) => {
+    try {
+        const tenantSlug = req.headers['x-tenant-slug'] as string;
+        if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
+
+        const client = getTenantClient(tenantSlug);
+
+        // Find patients with recent high risk vitals
+        // We look for vitals recorded in the last 24 hours that are HIGH or CRITICAL
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const highRiskVitals = await client.vitals.findMany({
+            where: {
+                recordedAt: {
+                    gte: yesterday
+                },
+                riskLevel: {
+                    in: ['HIGH', 'CRITICAL']
+                }
+            },
+            include: {
+                patient: true
+            },
+            orderBy: {
+                recordedAt: 'desc'
+            }
+        });
+
+        // Deduplicate patients (keep latest vital)
+        const patientMap = new Map();
+        highRiskVitals.forEach(vital => {
+            if (!patientMap.has(vital.patientId)) {
+                patientMap.set(vital.patientId, {
+                    patient: vital.patient,
+                    vital: {
+                        riskLevel: vital.riskLevel,
+                        recordedAt: vital.recordedAt,
+                        triageNote: vital.triageNote,
+                        bloodPressure: vital.bloodPressure,
+                        temperature: vital.temperature
+                    }
+                });
+            }
+        });
+
+        res.json(Array.from(patientMap.values()));
+    } catch (error) {
+        console.error('Get high risk patients error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

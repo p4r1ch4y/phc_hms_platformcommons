@@ -1,7 +1,7 @@
 
 
 import { useState, useEffect } from 'react';
-import { Users, Stethoscope, AlertTriangle, Activity, Plus } from 'lucide-react';
+import { Users, Stethoscope, AlertTriangle, Activity, Plus, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../api/client';
 import { StatCardsSkeleton, TableSkeleton } from '../../components/ui/Skeleton';
@@ -24,15 +24,19 @@ const DashboardHome = () => {
     const [recentPatients, setRecentPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [highRiskPatients, setHighRiskPatients] = useState<any[]>([]);
+    const [lowStockMedicines, setLowStockMedicines] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setError(null);
-                const [patientStats, consultationStats, patientsList] = await Promise.all([
+                const [patientStats, consultationStats, patientsList, highRisk, lowStock] = await Promise.all([
                     api.get('/patients/stats'),
                     api.get('/consultations/stats'),
-                    api.get('/patients')
+                    api.get('/patients'),
+                    api.get('/patients/high-risk'),
+                    api.get('/pharmacy/low-stock')
                 ]);
 
                 setStats({
@@ -42,6 +46,8 @@ const DashboardHome = () => {
 
                 // Get last 5 patients
                 setRecentPatients(patientsList.data.slice(0, 5));
+                setHighRiskPatients(highRisk.data);
+                setLowStockMedicines(lowStock.data);
             } catch (err) {
                 console.error('Error fetching dashboard data:', err);
                 setError('Failed to load dashboard data. Please try again.');
@@ -57,7 +63,7 @@ const DashboardHome = () => {
         { name: 'Total Patients', value: stats.totalPatients, change: `+${stats.newPatients} today`, icon: Users, color: 'text-blue-600', bg: 'bg-blue-100' },
         { name: 'Today\'s Visits', value: stats.todayConsultations, change: 'Active', icon: Stethoscope, color: 'text-green-600', bg: 'bg-green-100' },
         { name: 'Pending Consultations', value: stats.pendingConsultations, change: 'Queue', icon: Activity, color: 'text-orange-600', bg: 'bg-orange-100' },
-        { name: 'Low Stock Items', value: '3', change: 'Action needed', icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-100' }, // Mocked for now
+        { name: 'Low Stock Items', value: lowStockMedicines.length, change: 'Action needed', icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-100' },
     ];
 
     if (error) {
@@ -85,10 +91,16 @@ const DashboardHome = () => {
                     <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
                     <p className="text-slate-500">Welcome back, here's what's happening at your PHC today.</p>
                 </div>
-                <Link to="/dashboard/patients/new" className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm">
-                    <Plus className="h-5 w-5" />
-                    New Patient
-                </Link>
+                <div className="flex gap-3">
+                    <Link to="/dashboard/ocr" className="inline-flex items-center justify-center gap-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm">
+                        <FileText className="h-5 w-5" />
+                        Scan Report
+                    </Link>
+                    <Link to="/dashboard/patients/new" className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm">
+                        <Plus className="h-5 w-5" />
+                        New Patient
+                    </Link>
+                </div>
             </div>
 
             {/* Stats Grid */}
@@ -160,24 +172,35 @@ const DashboardHome = () => {
                 <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
                     <h2 className="font-bold text-slate-900 mb-4">Action Required</h2>
                     <div className="space-y-4">
-                        <div className="p-4 bg-red-50 rounded-lg border border-red-100">
-                            <div className="flex gap-3">
-                                <AlertTriangle className="h-5 w-5 text-red-600 shrink-0" />
-                                <div>
-                                    <h3 className="text-sm font-medium text-red-900">Low Stock Alert</h3>
-                                    <p className="text-xs text-red-700 mt-1">Paracetamol 500mg is running low (Less than 50 units).</p>
+                        {lowStockMedicines.length > 0 && lowStockMedicines.map((med: any) => (
+                            <div key={med.id} className="p-4 bg-red-50 rounded-lg border border-red-100">
+                                <div className="flex gap-3">
+                                    <AlertTriangle className="h-5 w-5 text-red-600 shrink-0" />
+                                    <div>
+                                        <h3 className="text-sm font-medium text-red-900">Low Stock Alert</h3>
+                                        <p className="text-xs text-red-700 mt-1">{med.name} is running low ({med.totalStock} {med.unit}).</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
-                            <div className="flex gap-3">
-                                <Activity className="h-5 w-5 text-orange-600 shrink-0" />
-                                <div>
-                                    <h3 className="text-sm font-medium text-orange-900">Abnormal Vitals</h3>
-                                    <p className="text-xs text-orange-700 mt-1">Patient #1024 recorded high BP (160/100).</p>
+                        ))}
+                        {highRiskPatients.length > 0 && highRiskPatients.map((item: any) => (
+                            <div key={item.patient.id} className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                                <div className="flex gap-3">
+                                    <Activity className="h-5 w-5 text-orange-600 shrink-0" />
+                                    <div>
+                                        <h3 className="text-sm font-medium text-orange-900">Abnormal Vitals</h3>
+                                        <p className="text-xs text-orange-700 mt-1">
+                                            {item.patient.firstName} {item.patient.lastName} recorded {item.vital.riskLevel} risk vitals.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ))}
+                        {lowStockMedicines.length === 0 && highRiskPatients.length === 0 && (
+                            <div className="text-center text-slate-500 py-4 text-sm">
+                                No urgent actions required.
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

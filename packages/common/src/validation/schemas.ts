@@ -61,7 +61,10 @@ export const VitalsSchema = z.object({
 // Consultation validation schemas
 export const ConsultationSchema = z.object({
     patientId: z.string().uuid('Invalid patient ID'),
-    doctorId: z.string().uuid('Invalid doctor ID').optional()
+    doctorId: z.string().uuid('Invalid doctor ID').optional(),
+    diagnosis: z.string().optional(),
+    prescription: z.any().optional(),
+    notes: z.string().optional()
 });
 
 export const DiagnosisSchema = z.object({

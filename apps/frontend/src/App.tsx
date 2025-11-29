@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import LandingPage from './components/landing/LandingPage';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHome from './pages/dashboard/Home';
 import Patients from './pages/dashboard/patients/Patients';
+import PatientDetails from './pages/dashboard/patients/PatientDetails';
 import RegisterPatient from './pages/dashboard/patients/RegisterPatient';
 import RecordVitals from './pages/dashboard/patients/RecordVitals';
 import Consultations from './pages/dashboard/consultations/Consultations';
@@ -13,6 +15,8 @@ import Pharmacy from './pages/dashboard/pharmacy/Pharmacy';
 import AddMedicine from './pages/dashboard/pharmacy/AddMedicine';
 import StaffList from './pages/dashboard/staff/StaffList';
 import AddStaff from './pages/dashboard/staff/AddStaff';
+// import OCRScan from './pages/dashboard/ocr/OCRScan';
+const OCRScan = lazy(() => import('./pages/dashboard/ocr/OCRScan'));
 
 import Reports from './pages/dashboard/reports/Reports';
 
@@ -29,6 +33,7 @@ function App() {
           <Route index element={<DashboardHome />} />
           <Route path="patients" element={<Patients />} />
           <Route path="patients/new" element={<RegisterPatient />} />
+          <Route path="patients/:id" element={<PatientDetails />} />
           <Route path="patients/:patientId/vitals" element={<RecordVitals />} />
           <Route path="consultations" element={<Consultations />} />
           <Route path="consultations/new" element={<NewConsultation />} />
@@ -38,6 +43,11 @@ function App() {
           <Route path="staff/new" element={<AddStaff />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="ocr" element={
+            <Suspense fallback={<div className="p-6 text-center">Loading Scanner...</div>}>
+              <OCRScan />
+            </Suspense>
+          } />
         </Route>
       </Routes>
     </Router>

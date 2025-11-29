@@ -3,7 +3,9 @@ import { getTenantClient } from '../utils/tenant-db';
 
 export const createConsultation = async (req: Request, res: Response) => {
     try {
-        const { patientId, doctorId } = req.body;
+        const { patientId, doctorId, diagnosis, prescription } = req.body;
+        console.log('[Consultation] Create Request Body:', req.body);
+        console.log('[Consultation] User:', req.user);
         const tenantSlug = req.headers['x-tenant-slug'] as string;
 
         const actualDoctorId = doctorId || req.user?.userId;
@@ -17,14 +19,20 @@ export const createConsultation = async (req: Request, res: Response) => {
             data: {
                 patientId,
                 doctorId: actualDoctorId,
-                status: 'PENDING',
+                diagnosis,
+                prescription,
+                status: 'COMPLETED', // Since we are adding diagnosis/prescription immediately
             },
         });
 
         res.status(201).json(consultation);
     } catch (error) {
         console.error('Create consultation error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        if (error instanceof Error) {
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
+        }
+        res.status(500).json({ message: 'Internal server error', error: error instanceof Error ? error.message : String(error) });
     }
 };
 

@@ -15,7 +15,10 @@ export const getTenantClient = (tenantSlug: string): PrismaClient => {
         const databaseUrl = process.env.DATABASE_URL;
         if (!databaseUrl) throw new Error('DATABASE_URL not found');
 
-        const tenantUrl = `${databaseUrl}?schema=tenant_${tenantSlug}`;
+        const tenantUrl = `${databaseUrl}?schema=${tenantSlug}`;
+        console.log(`[Pharmacy] Initializing client for tenant: ${tenantSlug}`);
+        console.log(`[Pharmacy] DB URL: ${databaseUrl.replace(/:[^:@]*@/, ':****@')}`); // Hide password
+        console.log(`[Pharmacy] Tenant URL: ${tenantUrl.replace(/:[^:@]*@/, ':****@')}`);
 
         clients[tenantSlug] = new PrismaClient({
             datasources: {

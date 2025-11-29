@@ -39,7 +39,7 @@ const LandingPage = () => {
                                 Simple, smart hospital management for <span className="text-primary-600">India's PHCs</span>
                             </h1>
                             <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg">
-                                Digitize your Primary Health Centre with a platform designed for rural reality. Registration, vitals, consultation, and pharmacy—all in one place, even offline.
+                                Digitize your Primary Health Centre with a platform designed for rural reality. Registration, vitals, consultation, and pharmacy <br/> all in one place, even offline.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <Link to="/register" className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-primary-200 transition-all flex items-center justify-center gap-2">
@@ -308,8 +308,8 @@ const LandingPage = () => {
                         </div>
                     </div>
                     <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
-                        <p>© 2024 PHC Platform Commons. Built for Platform Commons x Masai School Hackathon.</p>
-                        <p>Design inspired by modern healthcare SaaS patterns.</p>
+                        <p>© 2025 PHC Commons. Built for <a href="https://masaischool.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">MasaiVerse</a> and <a href="https://www.platformcommons.org/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Platform Commons</a>  Hackaerena 2.0 Hackathon.</p>
+                        <p>Design inspired by modern healthcare SaaS and <a href="https://www.platformcommons.org/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Platform Commons</a> Design and patterns.</p>
                     </div>
                 </div>
             </footer>
