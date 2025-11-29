@@ -85,7 +85,7 @@ const NewConsultation = () => {
             await api.post('/consultations', {
                 patientId: selectedPatient.id,
                 diagnosis: formData.diagnosis,
-                prescription: { medicines: formData.prescription.split('\n').map(m => ({ name: m })) },
+                prescription: formData.prescription,
                 notes: formData.notes
             });
             navigate('/dashboard/consultations');

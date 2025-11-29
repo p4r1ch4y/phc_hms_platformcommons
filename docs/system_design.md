@@ -4,7 +4,7 @@
 
 The system follows a **Microservices Architecture** with a **Multi-tenant Database** strategy using PostgreSQL Schemas.
 
-```mermaid
+```
 graph TD
     Client[Client (Web/Mobile)] --> Gateway[API Gateway (Express)]
     
@@ -21,20 +21,6 @@ graph TD
         Patient --> DB
         Consult --> DB
     end
-```
-
-## Multi-tenancy Strategy
-
-We use **Schema-based Multi-tenancy** to ensure strict data isolation between hospitals.
-
-- **Management Schema**: Stores global data (Tenants, Users).
-- **Tenant Schemas**: Each hospital gets a dedicated schema (e.g., `hospital_apollo`, `hospital_fortis`) storing their Patients, Vitals, and Consultations.
-
-```mermaid
-erDiagram
-    %% Management Schema
-    Tenant ||--|{ User : "has staff"
-    Tenant {
         string id PK
         string slug "Schema Name"
         string name

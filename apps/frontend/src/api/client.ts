@@ -28,9 +28,6 @@ api.interceptors.request.use(
         const tenantSlug = localStorage.getItem('tenantSlug');
         if (tenantSlug) {
             config.headers['x-tenant-slug'] = tenantSlug;
-        } else if (user.tenantId) {
-            // Fallback if we stored it in user object
-            config.headers['x-tenant-slug'] = user.tenantId;
         }
 
         return config;

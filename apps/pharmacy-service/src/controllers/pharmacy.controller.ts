@@ -3,6 +3,7 @@ import { getTenantClient } from '../utils/tenant-db';
 
 export const addMedicine = async (req: Request, res: Response) => {
     try {
+        console.log('Add Medicine Request:', req.body);
         const { name, manufacturer, unit, lowStockThreshold } = req.body;
         const tenantSlug = req.headers['x-tenant-slug'] as string;
 
@@ -62,6 +63,7 @@ export const addBatch = async (req: Request, res: Response) => {
 
 export const getInventory = async (req: Request, res: Response) => {
     try {
+        console.log('Get Inventory Request');
         const tenantSlug = req.headers['x-tenant-slug'] as string;
         if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
 
@@ -96,6 +98,40 @@ export const getInventory = async (req: Request, res: Response) => {
         res.json(processedInventory);
     } catch (error) {
         console.error('Get inventory error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const getLowStockMedicines = async (req: Request, res: Response) => {
+    try {
+        const tenantSlug = req.headers['x-tenant-slug'] as string;
+        if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
+
+        const client = getTenantClient(tenantSlug);
+
+        // Fetch all medicines with their batches
+        const inventory = await client.medicine.findMany({
+            include: {
+                batches: {
+                    where: {
+                        quantity: { gt: 0 }
+                    }
+                }
+            }
+        });
+
+        // Filter for low stock
+        const lowStockMedicines = inventory.map(med => {
+            const totalStock = med.batches.reduce((sum, batch) => sum + batch.quantity, 0);
+            return {
+                ...med,
+                totalStock
+            };
+        }).filter(med => med.totalStock <= med.lowStockThreshold);
+
+        res.json(lowStockMedicines);
+    } catch (error) {
+        console.error('Get low stock medicines error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

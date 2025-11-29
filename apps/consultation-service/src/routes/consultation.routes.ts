@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { createConsultation, updateDiagnosis, listConsultations, getConsultationStats } from '../controllers/consultation.controller';
-import { 
-    authenticate, 
-    authorize, 
-    validateBody, 
-    ConsultationSchema, 
+import {
+    authenticate,
+    authorize,
+    validateBody,
+    ConsultationSchema,
     DiagnosisSchema,
     apiRateLimiter,
     writeRateLimiter
@@ -16,8 +16,8 @@ router.use(authenticate);
 router.use(apiRateLimiter);
 
 router.post('/', authorize(['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE']), writeRateLimiter, validateBody(ConsultationSchema), createConsultation);
-router.put('/:id/diagnosis', authorize(['DOCTOR']), writeRateLimiter, validateBody(DiagnosisSchema), updateDiagnosis);
+router.put('/:id/diagnosis', authorize(['DOCTOR', 'NURSE', 'HOSPITAL_ADMIN', 'ASHA']), writeRateLimiter, validateBody(DiagnosisSchema), updateDiagnosis);
 router.get('/', authorize(['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE']), listConsultations);
-router.get('/stats', authorize(['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE']), getConsultationStats);
+router.get('/stats', authorize(['HOSPITAL_ADMIN', 'DOCTOR', 'NURSE', 'ASHA']), getConsultationStats);
 
 export default router;

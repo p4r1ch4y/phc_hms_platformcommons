@@ -82,6 +82,7 @@ export const login = async (req: Request, res: Response) => {
                 role: user.role,
                 firstName: user.name?.split(' ')[0] || user.name,
                 lastName: user.name?.split(' ')[1] || '',
+                tenantId: user.tenantId,
             },
             tenant: user.tenant ? {
                 id: user.tenant.id,

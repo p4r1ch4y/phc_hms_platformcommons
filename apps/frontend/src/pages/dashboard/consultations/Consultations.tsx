@@ -110,9 +110,9 @@ const Consultations = () => {
                                             {new Date(consultation.createdAt).toLocaleTimeString()}
                                         </div>
                                     </div>
-                                    <button className="p-2 text-slate-400 hover:text-primary-600 transition-colors">
+                                    <Link to={`/dashboard/patients/${consultation.patientId}`} className="p-2 text-slate-400 hover:text-primary-600 transition-colors">
                                         <FileText className="h-5 w-5" />
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         ))}

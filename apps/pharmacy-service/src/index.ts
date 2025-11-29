@@ -11,6 +11,8 @@ dotenv.config({ path: path.resolve(__dirname, '../../../packages/database/.env')
 const app = express();
 const PORT = process.env.PORT || 3005;
 
+console.log('Pharmacy Service JWT_SECRET:', process.env.JWT_SECRET ? process.env.JWT_SECRET.substring(0, 5) + '...' : 'NOT SET');
+
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));

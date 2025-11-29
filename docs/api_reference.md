@@ -3,26 +3,6 @@
 ## Overview
 The PHC Platform Commons API is a microservices-based system designed for multi-tenant hospital management. It uses a **Gateway Pattern**, meaning all requests should be routed through the API Gateway (default port: `3000`).
 
-## Base URL
-`http://localhost:3000`
-
-## Authentication & Headers
-Most endpoints require authentication via JWT.
-- **Authorization**: `Bearer <token>`
-- **x-tenant-slug**: Required for tenant-specific operations (Patient, Consultation services). This identifies which hospital schema to access.
-
----
-
-## 1. Auth Service
-**Base Path**: `/auth`
-
-### Register User (Hospital Admin)
-Creates a new user in the global management system.
-- **POST** `/register`
-- **Body**:
-  ```json
-  {
-    "email": "admin@hospital.com",
     "password": "securepassword",
     "name": "Dr. Admin",
     "role": "HOSPITAL_ADMIN",

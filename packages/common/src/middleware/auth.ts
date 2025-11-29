@@ -23,7 +23,9 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         const decoded = verifyToken(token);
         req.user = decoded;
         next();
-    } catch (error) {
+    } catch (error: any) {
+        console.error('Auth Error:', error.message);
+        console.log('Token:', token.substring(0, 20) + '...');
         return res.status(401).json({ message: 'Invalid token' });
     }
 };

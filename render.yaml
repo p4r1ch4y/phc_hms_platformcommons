@@ -1,0 +1,100 @@
+services:
+  # Frontend
+  - type: web
+    name: phc-frontend
+    env: node
+    buildCommand: npm install && npm run build -w apps/frontend
+    startCommand: npm run preview -w apps/frontend
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: phc-api-gateway
+          property: host
+
+  # API Gateway
+  - type: web
+    name: phc-api-gateway
+    env: node
+    buildCommand: npm install && npm run build -w apps/api-gateway
+    startCommand: npm start -w apps/api-gateway
+    envVars:
+      - key: AUTH_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-auth-service
+          property: host
+      - key: TENANT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-tenant-service
+          property: host
+      - key: PATIENT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-patient-service
+          property: host
+      - key: CONSULTATION_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-consultation-service
+          property: host
+      - key: PHARMACY_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-pharmacy-service
+          property: host
+
+  # Microservices (Private Services)
+  - type: pserv
+    name: phc-auth-service
+    env: node
+    buildCommand: npm install && npm run build -w apps/auth-service
+    startCommand: npm start -w apps/auth-service
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: pserv
+    name: phc-tenant-service
+    env: node
+    buildCommand: npm install && npm run build -w apps/tenant-service
+    startCommand: npm start -w apps/tenant-service
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+
+  - type: pserv
+    name: phc-patient-service
+    env: node
+    buildCommand: npm install && npm run build -w apps/patient-service
+    startCommand: npm start -w apps/patient-service
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: pserv
+    name: phc-consultation-service
+    env: node
+    buildCommand: npm install && npm run build -w apps/consultation-service
+    startCommand: npm start -w apps/consultation-service
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: pserv
+    name: phc-pharmacy-service
+    env: node
+    buildCommand: npm install && npm run build -w apps/pharmacy-service
+    startCommand: npm start -w apps/pharmacy-service
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false

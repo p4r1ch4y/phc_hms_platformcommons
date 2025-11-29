@@ -123,7 +123,7 @@ const AddStaff = () => {
                                 <option value="NURSE">Nurse</option>
                                 <option value="PHARMACIST">Pharmacist</option>
                                 <option value="LAB_TECHNICIAN">Lab Technician</option>
-                                <option value="ASHA_WORKER">ASHA Worker</option>
+                                <option value="ASHA">ASHA Worker</option>
                                 <option value="HOSPITAL_ADMIN">Admin</option>
                             </select>
                         </div>

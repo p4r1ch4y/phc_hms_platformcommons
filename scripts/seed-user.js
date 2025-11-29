@@ -11,18 +11,35 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-    const email = 'test@example.com';
-    const password = 'password';
+    // 1. Create Tenant
+    const tenant = await prisma.tenant.upsert({
+        where: { slug: 'city-hospital' },
+        update: {},
+        create: {
+            name: 'City Hospital',
+            slug: 'city-hospital',
+            address: '123 Health St, Metropolis'
+        }
+    });
+    console.log({ tenant });
+
+    // 2. Create Hospital Admin
+    const email = 'testdoc@test.local';
+    const password = 'Admin123';
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.upsert({
         where: { email },
-        update: {},
+        update: {
+            tenantId: tenant.id,
+            role: 'HOSPITAL_ADMIN'
+        },
         create: {
             email,
             password: hashedPassword,
-            name: 'Test Admin',
-            role: 'SUPER_ADMIN',
+            name: 'Test Doctor',
+            role: 'HOSPITAL_ADMIN',
+            tenantId: tenant.id
         },
     });
 

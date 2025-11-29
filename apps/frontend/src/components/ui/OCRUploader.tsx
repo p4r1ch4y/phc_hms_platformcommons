@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { createWorker } from 'tesseract.js';
+// import { createWorker } from 'tesseract.js';
 import { Upload, FileText, X, Loader2, ScanLine } from 'lucide-react';
 
 interface OCRUploaderProps {
@@ -33,6 +33,9 @@ export const OCRUploader = ({ onTextExtracted }: OCRUploaderProps) => {
         setProgress(0);
 
         try {
+            // Dynamic import to prevent loading issues from crashing the app
+            const { createWorker } = await import('tesseract.js');
+
             const worker = await createWorker('eng', 1, {
                 logger: m => {
                     if (m.status === 'recognizing text') {
