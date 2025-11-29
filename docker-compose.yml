@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5434:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: apps/api-gateway/Dockerfile
     ports:
-      - "3000:3000"
+      - "8000:3000"
     environment:
       - PORT=3000
       - AUTH_SERVICE_URL=http://auth-service:3001
@@ -126,7 +126,7 @@ services:
       context: .
       dockerfile: apps/frontend/Dockerfile
     ports:
-      - "5173:80"
+      - "5174:80"
     depends_on:
       - api-gateway
     networks:

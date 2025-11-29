@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { getTenantClient } from '../utils/tenant-db';
 import { managementClient } from '@phc/database';
+import { calculateRisk } from '../utils/triage';
 
 export const registerPatient = async (req: Request, res: Response) => {
     try {
@@ -126,17 +127,27 @@ export const recordVitals = async (req: Request, res: Response) => {
 
         const client = getTenantClient(tenantSlug);
 
+        const vitalsData = {
+            patientId,
+            temperature: parseFloat(temperature),
+            bloodPressure,
+            pulse: parseInt(pulse),
+            weight: parseFloat(weight),
+            height: parseFloat(height),
+            bloodSugar: bloodSugar ? parseFloat(bloodSugar) : undefined,
+            spo2: req.body.spo2 ? parseFloat(req.body.spo2) : undefined,
+        };
+
+        const { riskLevel, triageNote } = calculateRisk(vitalsData);
+
         const vitals = await client.vitals.create({
             data: {
-                patientId,
-                temperature: parseFloat(temperature),
-                bloodPressure,
-                pulse: parseInt(pulse),
-                weight: parseFloat(weight),
-                height: parseFloat(height),
-                bloodSugar: bloodSugar ? parseFloat(bloodSugar) : null,
-                recordedBy: userId
-            }
+                ...vitalsData,
+                bloodSugar: vitalsData.bloodSugar ?? null, // Handle optional field for Prisma
+                recordedBy: userId,
+                riskLevel,
+                triageNote
+            } as any
         });
 
         res.status(201).json(vitals);

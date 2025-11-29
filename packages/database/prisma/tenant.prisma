@@ -39,6 +39,8 @@ model Vitals {
   bloodSugar    Float?   // Random Blood Sugar in mg/dL
   recordedBy    String   // UserId of Nurse/ASHA
   recordedAt    DateTime @default(now())
+  riskLevel     RiskLevel @default(LOW)
+  triageNote    String?
   
   @@index([patientId])
   @@index([recordedAt])
@@ -71,6 +73,13 @@ enum ConsultationStatus {
   PENDING
   COMPLETED
   CANCELLED
+}
+
+enum RiskLevel {
+  LOW
+  MODERATE
+  HIGH
+  CRITICAL
 }
 
 model Medicine {
