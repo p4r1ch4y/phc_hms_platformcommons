@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { managementClient } from '@phc/database';
-import { signToken, AppError } from '@phc/common';
+import { signToken, VALID_STAFF_ROLES } from '@phc/common';
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -105,8 +105,7 @@ export const createStaff = async (req: Request, res: Response) => {
         }
 
         // Validate role is a valid staff role (not SUPER_ADMIN or HOSPITAL_ADMIN)
-        const validStaffRoles = ['DOCTOR', 'NURSE', 'ASHA', 'LAB_TECHNICIAN', 'PHARMACIST'];
-        if (!validStaffRoles.includes(role)) {
+        if (!VALID_STAFF_ROLES.includes(role)) {
             return res.status(400).json({ message: 'Invalid staff role' });
         }
 

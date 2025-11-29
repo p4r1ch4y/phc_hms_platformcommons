@@ -42,8 +42,14 @@ export const createTenantSchema = async (slug: string) => {
         // Sanitize the slug before using in SQL
         const safeSlug = sanitizeSchemaName(slug);
         
-        // 1. Create Schema in DB - using parameterized approach where possible
-        // Note: Schema names can't be parameterized in SQL, so we validate strictly above
+        // NOTE: We use $executeRawUnsafe here because PostgreSQL does not support
+        // parameterized schema names in DDL statements like CREATE SCHEMA.
+        // The slug is strictly validated above using sanitizeSchemaName() which:
+        // 1. Only allows alphanumeric characters and underscores
+        // 2. Requires starting with a letter
+        // 3. Blocks reserved names
+        // 4. Limits length to 63 characters
+        // This makes SQL injection impossible with the allowed character set.
         await managementClient.$executeRawUnsafe(`CREATE SCHEMA IF NOT EXISTS "${safeSlug}"`);
 
         // 2. Run migrations/push for this schema

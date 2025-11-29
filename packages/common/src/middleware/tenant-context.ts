@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { TENANT_SLUG, POSTGRES_IDENTIFIER_MAX_LENGTH } from '../constants';
 
 // Extend Express Request to include tenantSlug
 declare global {
@@ -19,7 +20,10 @@ export const isValidTenantSlug = (slug: string): boolean => {
     }
     // Must start with a letter, contain only lowercase alphanumeric and underscores
     // Max 63 characters (PostgreSQL schema name limit)
-    return /^[a-z][a-z0-9_]{2,62}$/.test(slug);
+    if (slug.length < TENANT_SLUG.MIN_LENGTH || slug.length > POSTGRES_IDENTIFIER_MAX_LENGTH) {
+        return false;
+    }
+    return TENANT_SLUG.PATTERN.test(slug);
 };
 
 /**
