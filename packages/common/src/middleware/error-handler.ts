@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
+// Interface for Prisma client errors
+interface PrismaError extends Error {
+    code?: string;
+}
+
 /**
  * Custom application error class with HTTP status code support.
  */
@@ -25,13 +30,13 @@ export const errorHandler = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction
 ) => {
-    // Log the error
+    // Log the error - use Express Request extension from auth middleware
     console.error(`[${new Date().toISOString()}] Error:`, {
         path: req.path,
         method: req.method,
         error: err.message,
         stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-        userId: (req as any).user?.userId,
+        userId: req.user?.userId,
         tenantSlug: req.headers['x-tenant-slug']
     });
 
@@ -45,7 +50,7 @@ export const errorHandler = (
 
     // Handle Prisma errors
     if (err.name === 'PrismaClientKnownRequestError') {
-        const prismaError = err as any;
+        const prismaError = err as PrismaError;
         if (prismaError.code === 'P2002') {
             return res.status(409).json({
                 error: 'A record with this value already exists',
@@ -87,7 +92,7 @@ export const errorHandler = (
  * Eliminates the need for try-catch in every controller.
  */
 export const asyncHandler = (
-    fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+    fn: (req: Request, res: Response, next: NextFunction) => Promise<void>
 ) => {
     return (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next)).catch(next);

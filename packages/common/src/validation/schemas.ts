@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TENANT_SLUG, PHONE, ABHA, VALID_STAFF_ROLES, ALL_ROLES, PASSWORD } from '../constants';
 
 // Patient validation schemas
 export const PatientSchema = z.object({
@@ -8,9 +9,9 @@ export const PatientSchema = z.object({
         message: 'Invalid date format'
     }),
     gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
-    phone: z.string().regex(/^[0-9]{10}$/, 'Phone must be 10 digits').optional().or(z.literal('')),
+    phone: z.string().regex(PHONE.SIMPLE_PATTERN, PHONE.ERROR_MESSAGE).optional().or(z.literal('')),
     address: z.string().max(500).optional(),
-    abhaId: z.string().regex(/^\d{2}-\d{4}-\d{4}-\d{4}$/, 'Invalid ABHA ID format').optional().or(z.literal(''))
+    abhaId: z.string().regex(ABHA.PATTERN, ABHA.ERROR_MESSAGE).optional().or(z.literal(''))
 });
 
 // Auth validation schemas
@@ -21,29 +22,29 @@ export const LoginSchema = z.object({
 
 export const RegisterSchema = z.object({
     email: z.string().email('Invalid email format'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    password: z.string().min(PASSWORD.MIN_LENGTH, PASSWORD.ERROR_MESSAGE),
     name: z.string().min(1, 'Name is required').max(100).optional(),
-    role: z.enum(['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'DOCTOR', 'NURSE', 'ASHA', 'LAB_TECHNICIAN', 'PHARMACIST', 'PATIENT']).optional(),
+    role: z.enum(ALL_ROLES).optional(),
     tenantId: z.string().uuid().optional()
 });
 
 export const StaffSchema = z.object({
     email: z.string().email('Invalid email format'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    password: z.string().min(PASSWORD.MIN_LENGTH, PASSWORD.ERROR_MESSAGE),
     name: z.string().min(1, 'Name is required').max(100),
-    role: z.enum(['DOCTOR', 'NURSE', 'ASHA', 'LAB_TECHNICIAN', 'PHARMACIST'])
+    role: z.enum(VALID_STAFF_ROLES)
 });
 
 // Tenant validation schemas
 export const TenantSchema = z.object({
     name: z.string().min(1, 'Name is required').max(200),
     slug: z.string()
-        .regex(/^[a-z][a-z0-9_]*$/, 'Slug must start with letter and contain only lowercase letters, numbers, and underscores')
-        .min(3, 'Slug must be at least 3 characters')
-        .max(50, 'Slug must be at most 50 characters'),
+        .regex(TENANT_SLUG.PATTERN, TENANT_SLUG.ERROR_MESSAGE)
+        .min(TENANT_SLUG.MIN_LENGTH, `Slug must be at least ${TENANT_SLUG.MIN_LENGTH} characters`)
+        .max(TENANT_SLUG.MAX_LENGTH, `Slug must be at most ${TENANT_SLUG.MAX_LENGTH} characters`),
     address: z.string().max(500).optional(),
     adminEmail: z.string().email('Invalid admin email format'),
-    adminPassword: z.string().min(8, 'Admin password must be at least 8 characters'),
+    adminPassword: z.string().min(PASSWORD.MIN_LENGTH, PASSWORD.ERROR_MESSAGE),
     adminName: z.string().min(1, 'Admin name is required').max(100)
 });
 
