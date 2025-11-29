@@ -21,6 +21,10 @@ model Patient {
   consultations Consultation[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  
+  @@index([abhaId])
+  @@index([firstName, lastName])
+  @@index([createdAt])
 }
 
 model Vitals {
@@ -35,6 +39,9 @@ model Vitals {
   bloodSugar    Float?   // Random Blood Sugar in mg/dL
   recordedBy    String   // UserId of Nurse/ASHA
   recordedAt    DateTime @default(now())
+  
+  @@index([patientId])
+  @@index([recordedAt])
 }
 
 model Consultation {
@@ -47,6 +54,11 @@ model Consultation {
   status        ConsultationStatus @default(PENDING)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 enum Gender {
@@ -70,6 +82,8 @@ model Medicine {
   batches           Batch[]
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  
+  @@index([name])
 }
 
 model Batch {
@@ -81,4 +95,8 @@ model Batch {
   quantity    Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  @@index([medicineId])
+  @@index([expiryDate])
+  @@index([batchNumber])
 }
