@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { managementClient } from '@phc/database';
-import { signToken } from '@phc/common';
+import { signToken, AppError } from '@phc/common';
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
         }
 
         // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 12);
 
         // Create user
         const user = await managementClient.user.create({
@@ -25,7 +25,7 @@ export const register = async (req: Request, res: Response) => {
                 email,
                 password: hashedPassword,
                 name,
-                role: role || 'HOSPITAL_ADMIN', // Default to Hospital Admin if not specified
+                role: role || 'HOSPITAL_ADMIN',
                 tenantId,
             },
         });
@@ -104,6 +104,12 @@ export const createStaff = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Admin must belong to a tenant to create staff' });
         }
 
+        // Validate role is a valid staff role (not SUPER_ADMIN or HOSPITAL_ADMIN)
+        const validStaffRoles = ['DOCTOR', 'NURSE', 'ASHA', 'LAB_TECHNICIAN', 'PHARMACIST'];
+        if (!validStaffRoles.includes(role)) {
+            return res.status(400).json({ message: 'Invalid staff role' });
+        }
+
         // Check if user exists
         const existingUser = await managementClient.user.findUnique({
             where: { email },
@@ -113,8 +119,8 @@ export const createStaff = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Hash password with higher cost factor for security
+        const hashedPassword = await bcrypt.hash(password, 12);
 
         // Create user linked to the same tenant
         const user = await managementClient.user.create({
@@ -122,7 +128,7 @@ export const createStaff = async (req: Request, res: Response) => {
                 email,
                 password: hashedPassword,
                 name,
-                role: role, // Role should be passed (e.g., DOCTOR, NURSE)
+                role: role,
                 tenantId: adminTenantId,
             },
         });

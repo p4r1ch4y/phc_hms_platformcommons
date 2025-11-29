@@ -17,6 +17,8 @@ model Tenant {
   updatedAt   DateTime @updatedAt
   users            User[]
   patientRegistries PatientRegistry[]
+  
+  @@index([slug])
 }
 
 model User {
@@ -29,6 +31,10 @@ model User {
   tenant    Tenant?  @relation(fields: [tenantId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  @@index([tenantId])
+  @@index([email])
+  @@index([role])
 }
 
 enum Role {
@@ -51,4 +57,7 @@ model PatientRegistry {
   updatedAt DateTime @updatedAt
 
   tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  
+  @@index([tenantId])
+  @@index([abhaId])
 }

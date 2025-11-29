@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 import pharmacyRoutes from './routes/pharmacy.routes';
 
@@ -10,6 +12,8 @@ const app = express();
 const PORT = process.env.PORT || 3005;
 
 app.use(cors());
+app.use(helmet());
+app.use(morgan('dev'));
 app.use(express.json());
 
 // Routes
