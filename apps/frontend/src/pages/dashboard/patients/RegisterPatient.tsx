@@ -102,20 +102,20 @@ const RegisterPatient = () => {
                     <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Register New Patient</h1>
-                    <p className="text-slate-500">Enter patient details to create a new record.</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Register New Patient</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Enter patient details to create a new record.</p>
                 </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
                 {/* Sidebar - OCR */}
                 <div className="md:col-span-1 space-y-4">
-                    <div className="bg-gradient-to-br from-primary-50 to-white p-4 rounded-xl border border-primary-100 shadow-sm">
+                    <div className="bg-gradient-to-br from-primary-50 to-white dark:from-slate-800 dark:to-slate-900 p-4 rounded-xl border border-primary-100 dark:border-slate-700 shadow-sm">
                         <div className="flex items-center gap-2 mb-3 text-primary-800 font-semibold">
                             <Sparkles className="h-4 w-4" />
                             <h3>AI Auto-fill</h3>
                         </div>
-                        <p className="text-xs text-slate-600 mb-4">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                             Scan an ID card or previous prescription to auto-fill patient details.
                         </p>
                         <OCRUploader onTextExtracted={handleOCRText} />
@@ -123,7 +123,7 @@ const RegisterPatient = () => {
                 </div>
 
                 {/* Main Form */}
-                <div className="md:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="md:col-span-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                     <form onSubmit={handleSubmit} className="p-6 space-y-8">
                         {error && (
                             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -146,7 +146,7 @@ const RegisterPatient = () => {
                                         required
                                         value={formData.firstName}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="Ramesh"
                                     />
                                 </div>
@@ -158,7 +158,7 @@ const RegisterPatient = () => {
                                         required
                                         value={formData.lastName}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="Kumar"
                                     />
                                 </div>
@@ -174,7 +174,7 @@ const RegisterPatient = () => {
                                             required
                                             value={formData.dateOfBirth}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                            className="block w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         />
                                     </div>
                                 </div>
@@ -184,7 +184,7 @@ const RegisterPatient = () => {
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                     >
                                         <option value="MALE">Male</option>
                                         <option value="FEMALE">Female</option>
@@ -214,7 +214,7 @@ const RegisterPatient = () => {
                                             name="abhaId"
                                             value={formData.abhaId}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                            className="block w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                             placeholder="12-3456-7890-1234"
                                         />
                                     </div>
@@ -231,7 +231,7 @@ const RegisterPatient = () => {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                            className="block w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                             placeholder="9876543210"
                                         />
                                     </div>
@@ -247,7 +247,7 @@ const RegisterPatient = () => {
                                             rows={3}
                                             value={formData.address}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                            className="block w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                             placeholder="Village, Post Office, District"
                                         />
                                     </div>
@@ -255,11 +255,11 @@ const RegisterPatient = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
+                        <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100 dark:border-slate-700">
                             <button
                                 type="button"
                                 onClick={() => navigate('/dashboard/patients')}
-                                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                             >
                                 Cancel
                             </button>

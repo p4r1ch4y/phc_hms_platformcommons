@@ -29,13 +29,13 @@ const OCRScan = () => {
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-slate-900">Scan Medical Report</h1>
-                <p className="text-slate-500">Upload a photo of a medical report or prescription to extract text.</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Scan Medical Report</h1>
+                <p className="text-slate-500 dark:text-slate-400">Upload a photo of a medical report or prescription to extract text.</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="space-y-6">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                             <FileText className="h-5 w-5 text-primary-600" />
                             Upload Image
@@ -44,28 +44,28 @@ const OCRScan = () => {
                     </div>
 
                     {scannedText && (
-                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <h2 className="font-semibold text-slate-900 mb-4">Next Steps</h2>
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">Next Steps</h2>
                             <div className="space-y-3">
                                 <button
                                     onClick={handleCreatePatient}
-                                    className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors text-left"
+                                    className="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors text-left"
                                 >
                                     <span className="flex items-center gap-3">
                                         <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
                                             <UserPlus className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <span className="block font-medium text-slate-900">Create New Patient</span>
-                                            <span className="block text-sm text-slate-500">Use extracted text to fill details</span>
+                                            <span className="block font-medium text-slate-900 dark:text-slate-100">Create New Patient</span>
+                                            <span className="block text-sm text-slate-500 dark:text-slate-400">Use extracted text to fill details</span>
                                         </div>
                                     </span>
-                                    <ArrowRight className="h-5 w-5 text-slate-400" />
+                                    <ArrowRight className="h-5 w-5 text-slate-400 dark:text-slate-300" />
                                 </button>
 
                                 <button
                                     onClick={handleCreateConsultation}
-                                    className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors text-left"
+                                    className="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors text-left"
                                 >
                                     <span className="flex items-center gap-3">
                                         <div className="p-2 bg-green-100 text-green-600 rounded-lg">
@@ -76,21 +76,21 @@ const OCRScan = () => {
                                             <span className="block text-sm text-slate-500">Add to existing patient record</span>
                                         </div>
                                     </span>
-                                    <ArrowRight className="h-5 w-5 text-slate-400" />
+                                    <ArrowRight className="h-5 w-5 text-slate-400 dark:text-slate-300" />
                                 </button>
                             </div>
                         </div>
                     )}
                 </div>
 
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm h-fit">
-                    <h2 className="font-semibold text-slate-900 mb-4">Extracted Text</h2>
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-fit">
+                    <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">Extracted Text</h2>
                     {scannedText ? (
-                        <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 min-h-[300px] whitespace-pre-wrap text-sm text-slate-700 font-mono">
+                        <div className="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 min-h-[300px] whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-200 font-mono">
                             {scannedText}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-[300px] text-slate-400 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50">
+                        <div className="flex flex-col items-center justify-center h-[300px] text-slate-400 dark:text-slate-300 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900/40">
                             <FileText className="h-12 w-12 mb-2 opacity-50" />
                             <p>No text extracted yet</p>
                         </div>

@@ -15,4 +15,18 @@
   h6 {
     @apply font-heading font-bold text-slate-800;
   }
+
+  /* Dark mode base overrides */
+  .dark body {
+    @apply bg-slate-900 text-slate-100;
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    @apply text-slate-100;
+  }
 }

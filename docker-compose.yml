@@ -26,21 +26,28 @@ services:
     ports:
       - "8000:3000"
     environment:
-      - PORT=3000
-      - AUTH_SERVICE_URL=http://auth-service:3001
-      - TENANT_SERVICE_URL=http://tenant-service:3002
-      - PATIENT_SERVICE_URL=http://patient-service:3003
-      - CONSULTATION_SERVICE_URL=http://consultation-service:3004
-      - PHARMACY_SERVICE_URL=http://pharmacy-service:3005
+      PORT: "3000"
+      AUTH_SERVICE_URL: "http://auth-service:3001"
+      TENANT_SERVICE_URL: "http://tenant-service:3002"
+      PATIENT_SERVICE_URL: "http://patient-service:3003"
+      CONSULTATION_SERVICE_URL: "http://consultation-service:3004"
+      PHARMACY_SERVICE_URL: "http://pharmacy-service:3005"
     depends_on:
       - auth-service
       - tenant-service
       - patient-service
       - consultation-service
       - pharmacy-service
+      - postgres
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - phc-network
-        - DATABASE_URL=${DATABASE_URL}
 
   auth-service:
     build:
@@ -49,15 +56,20 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - PORT=3001
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
-      - JWT_SECRET=${JWT_SECRET}
+      PORT: "3001"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/phc_hms"
+      JWT_SECRET: "${JWT_SECRET}"
     depends_on:
-      postgres:
-        condition: service_healthy
-        - DATABASE_URL=${DATABASE_URL}
+      - postgres
     networks:
       - phc-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   tenant-service:
     build:
@@ -66,15 +78,20 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - PORT=3002
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
-      - JWT_SECRET=${JWT_SECRET}
+      PORT: "3002"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/phc_hms"
+      JWT_SECRET: "${JWT_SECRET}"
     depends_on:
-        - DATABASE_URL=${DATABASE_URL}
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - phc-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3002/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   patient-service:
     build:
@@ -83,15 +100,20 @@ services:
     ports:
       - "3003:3003"
     environment:
-      - PORT=3003
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
-        - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
+      PORT: "3003"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/phc_hms"
+      JWT_SECRET: "${JWT_SECRET}"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - phc-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3003/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   consultation-service:
     build:
@@ -100,14 +122,20 @@ services:
     ports:
       - "3004:3004"
     environment:
-      - PORT=3004
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
-      - JWT_SECRET=${JWT_SECRET}
+      PORT: "3004"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/phc_hms"
+      JWT_SECRET: "${JWT_SECRET}"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - phc-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3004/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pharmacy-service:
     build:
@@ -116,14 +144,20 @@ services:
     ports:
       - "3005:3005"
     environment:
-      - PORT=3005
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
-      - JWT_SECRET=${JWT_SECRET}
+      PORT: "3005"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/phc_hms"
+      JWT_SECRET: "${JWT_SECRET}"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - phc-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3005/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:
@@ -135,6 +169,13 @@ services:
       - api-gateway
     networks:
       - phc-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres_data:

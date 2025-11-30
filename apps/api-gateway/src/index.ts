@@ -16,12 +16,18 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
 
-// Proxy routes
-app.use('/auth', createProxyMiddleware({ target: 'http://localhost:3001', changeOrigin: true }));
-app.use('/tenants', createProxyMiddleware({ target: 'http://localhost:3002', changeOrigin: true }));
-app.use('/patients', createProxyMiddleware({ target: 'http://localhost:3003', changeOrigin: true }));
-app.use('/consultations', createProxyMiddleware({ target: 'http://localhost:3004', changeOrigin: true }));
-app.use('/pharmacy', createProxyMiddleware({ target: 'http://localhost:3005', changeOrigin: true }));
+// Proxy routes (use environment-provided service URLs in containerized setups)
+const AUTH_TARGET = process.env.AUTH_SERVICE_URL || 'http://localhost:3001';
+const TENANT_TARGET = process.env.TENANT_SERVICE_URL || 'http://localhost:3002';
+const PATIENT_TARGET = process.env.PATIENT_SERVICE_URL || 'http://localhost:3003';
+const CONSULTATION_TARGET = process.env.CONSULTATION_SERVICE_URL || 'http://localhost:3004';
+const PHARMACY_TARGET = process.env.PHARMACY_SERVICE_URL || 'http://localhost:3005';
+
+app.use('/auth', createProxyMiddleware({ target: AUTH_TARGET, changeOrigin: true }));
+app.use('/tenants', createProxyMiddleware({ target: TENANT_TARGET, changeOrigin: true }));
+app.use('/patients', createProxyMiddleware({ target: PATIENT_TARGET, changeOrigin: true }));
+app.use('/consultations', createProxyMiddleware({ target: CONSULTATION_TARGET, changeOrigin: true }));
+app.use('/pharmacy', createProxyMiddleware({ target: PHARMACY_TARGET, changeOrigin: true }));
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'api-gateway' });

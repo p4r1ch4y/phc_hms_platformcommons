@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000';
+// Prefer environment configuration (Vite) and fall back to the local docker-compose host port.
+// docker-compose maps the api-gateway container 3000 -> host 8000, so default to 8000 for local docker runs.
+const API_URL = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+    ? import.meta.env.VITE_API_URL
+    : 'http://localhost:8000';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -36,4 +40,44 @@ api.interceptors.request.use(
     }
 );
 
+// Mark backend availability on responses
+api.interceptors.response.use(
+    (response) => {
+        try { localStorage.setItem('backendAvailable', 'true'); } catch (e) { /* ignore */ }
+        return response;
+    },
+    (error) => {
+        // If we have no response, it's likely a network/backend outage
+        if (!error.response) {
+            try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
+            console.error('API network error: backend may be offline', error);
+        } else {
+            // Server responded with a status (4xx/5xx) — log server error body for debugging
+            try { localStorage.setItem('backendAvailable', 'true'); } catch (e) { /* ignore */ }
+            console.error('API error response:', {
+                status: error.response.status,
+                data: error.response.data,
+                headers: error.response.headers
+            });
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default api;
+
+// Health check helper - try /health and set a local flag
+export const checkBackendHealth = async (): Promise<boolean> => {
+    try {
+        const resp = await api.get('/health');
+        if (resp.status === 200) {
+            try { localStorage.setItem('backendAvailable', 'true'); } catch (e) { /* ignore */ }
+            return true;
+        }
+    } catch (err) {
+        try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
+        return false;
+    }
+    try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
+    return false;
+};

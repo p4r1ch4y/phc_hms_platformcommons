@@ -36,19 +36,21 @@ const Reports = () => {
     }, []);
 
     if (loading) {
-        return <div className="p-8 text-center text-slate-500">Loading reports...</div>;
+        return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading reports...</div>;
     }
+
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
 
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-slate-900">Reports & Analytics</h1>
-                <p className="text-slate-500">Key insights into PHC performance and patient health.</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Reports & Analytics</h1>
+                <p className="text-slate-500 dark:text-slate-400">Key insights into PHC performance and patient health.</p>
             </div>
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
                             <Users className="h-6 w-6" />
@@ -59,7 +61,7 @@ const Reports = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-green-50 rounded-lg text-green-600">
                             <Activity className="h-6 w-6" />
@@ -70,7 +72,7 @@ const Reports = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-purple-50 rounded-lg text-purple-600">
                             <FileText className="h-6 w-6" />
@@ -86,8 +88,8 @@ const Reports = () => {
             {/* Charts */}
             <div className="grid lg:grid-cols-2 gap-6">
                 {/* Gender Distribution */}
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 className="text-lg font-semibold text-slate-900 mb-6">Patient Demographics (Gender)</h3>
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">Patient Demographics (Gender)</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -113,15 +115,15 @@ const Reports = () => {
                 </div>
 
                 {/* Age Distribution */}
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 className="text-lg font-semibold text-slate-900 mb-6">Age Distribution</h3>
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">Age Distribution</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={patientStats?.ageDistribution}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
+                                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#334155' : '#e6edf3'} />
+                                <XAxis dataKey="name" stroke={isDark ? '#94a3b8' : '#475569'} tick={{ fill: isDark ? '#cbd5e1' : '#475569' }} />
+                                <YAxis stroke={isDark ? '#94a3b8' : '#475569'} tick={{ fill: isDark ? '#cbd5e1' : '#475569' }} />
+                                <Tooltip wrapperStyle={{ background: isDark ? '#0f172a' : '#fff', border: 'none' }} contentStyle={{ color: isDark ? '#e6eef8' : '#0f172a' }} />
                                 <Bar dataKey="value" fill="#8884d8" name="Patients" />
                             </BarChart>
                         </ResponsiveContainer>
@@ -129,7 +131,7 @@ const Reports = () => {
                 </div>
 
                 {/* Top Diagnoses */}
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm lg:col-span-2">
                     <h3 className="text-lg font-semibold text-slate-900 mb-6">Top 5 Diagnoses</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
