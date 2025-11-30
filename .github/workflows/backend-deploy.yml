@@ -14,10 +14,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install
         run: npm ci
+
+      - name: Generate Prisma clients
+        run: npm run -w packages/database generate
 
       - name: Build workspaces
         run: npm run build
