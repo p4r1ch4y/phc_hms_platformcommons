@@ -6,11 +6,9 @@ import { OCRUploader } from '../../../components/ui/OCRUploader';
 const OCRScan = () => {
     const navigate = useNavigate();
     const [scannedText, setScannedText] = useState<string>('');
-    const [isProcessing, setIsProcessing] = useState(false);
 
     const handleTextExtracted = (text: string) => {
         setScannedText(text);
-        setIsProcessing(false);
     };
 
     const handleCreatePatient = () => {

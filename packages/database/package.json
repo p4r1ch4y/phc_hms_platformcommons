@@ -1,10 +1,11 @@
 {
     "name": "@phc/database",
     "version": "1.0.0",
-    "main": "index.ts",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "build": "npx prisma generate --schema=./prisma/schema.prisma && npx prisma generate --schema=./prisma/tenant.prisma && npx prisma generate --schema=./prisma/pharmacy.prisma",
-        "generate": "prisma generate --schema=./prisma/schema.prisma && prisma generate --schema=./prisma/tenant.prisma",
+        "build": "npx prisma generate --schema=./prisma/schema.prisma && npx prisma generate --schema=./prisma/tenant.prisma && npx prisma generate --schema=./prisma/pharmacy.prisma && npx tsc -p tsconfig.json && cp -R generated dist/generated",
+        "generate": "prisma generate --schema=./prisma/schema.prisma && prisma generate --schema=./prisma/tenant.prisma && npx tsc -p tsconfig.json && cp -R generated dist/generated",
         "migrate:management": "prisma migrate dev --schema=./prisma/schema.prisma --name init_management",
         "push:tenant": "prisma db push --schema=./prisma/tenant.prisma",
         "test": "echo \"Error: no test specified\" && exit 1"

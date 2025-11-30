@@ -9,9 +9,13 @@ import api from '../../../api/client';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 const Reports = () => {
+    interface GenderDistributionItem { name: string; value: number; [key: string]: unknown }
+    interface PatientStats { totalPatients?: number; newPatients?: number; genderDistribution?: GenderDistributionItem[]; ageDistribution?: Array<{ name: string; value: number }> }
+    interface ConsultationStats { todayConsultations?: number; topDiagnoses?: Array<{ name: string; value: number }> }
+
     const [loading, setLoading] = useState(true);
-    const [patientStats, setPatientStats] = useState<any>(null);
-    const [consultationStats, setConsultationStats] = useState<any>(null);
+    const [patientStats, setPatientStats] = useState<PatientStats | null>(null);
+    const [consultationStats, setConsultationStats] = useState<ConsultationStats | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -92,12 +96,13 @@ const Reports = () => {
                                     cx="50%"
                                     cy="50%"
                                     labelLine={false}
-                                    label={(props: any) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
+                                    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                                    label={(props: any) => `${props.name ?? ''} ${((props.percent ?? 0) * 100).toFixed(0)}%`}
                                     outerRadius={80}
                                     fill="#8884d8"
                                     dataKey="value"
                                 >
-                                    {patientStats?.genderDistribution?.map((_: any, index: number) => (
+                                    {patientStats?.genderDistribution?.map((_, index: number) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>

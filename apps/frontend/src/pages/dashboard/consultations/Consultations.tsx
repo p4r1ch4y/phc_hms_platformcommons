@@ -11,7 +11,7 @@ interface Consultation {
         lastName: string;
     };
     diagnosis: string;
-    prescription: any;
+    prescription: string;
     createdAt: string;
     status: 'PENDING' | 'COMPLETED';
 }

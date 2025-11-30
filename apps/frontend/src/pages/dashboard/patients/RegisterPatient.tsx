@@ -25,7 +25,7 @@ const RegisterPatient = () => {
 
     const handleOCRText = (text: string) => {
         const lines = text.split('\n');
-        const updates: any = {};
+        const updates: Partial<typeof formData> = {};
 
         // Simple heuristics for demo purposes
         // 1. Name detection (Look for "Name:" or assume first capitalized line)
@@ -40,9 +40,9 @@ const RegisterPatient = () => {
         }
 
         // 2. DOB/Age detection
-        const dobLine = lines.find(l => l.toLowerCase().includes('dob') || l.match(/\d{2}\/\d{2}\/\d{4}/));
+        const dobLine = lines.find(l => l.toLowerCase().includes('dob') || l.match(new RegExp('\\d{2}[/-]\\d{2}[/-]\\d{4}')));
         if (dobLine) {
-            const dateMatch = dobLine.match(/(\d{2})[\/-](\d{2})[\/-](\d{4})/);
+            const dateMatch = dobLine.match(/(\d{2})[/-](\d{2})[/-](\d{4})/);
             if (dateMatch) {
                 // Convert DD/MM/YYYY to YYYY-MM-DD for input[type=date]
                 updates.dateOfBirth = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
@@ -76,9 +76,17 @@ const RegisterPatient = () => {
         try {
             await api.post('/patients', formData);
             navigate('/dashboard/patients');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Registration error:', err);
-            setError(err.response?.data?.message || 'Failed to register patient');
+            let message = 'Failed to register patient';
+            if (err instanceof Error) message = err.message;
+            else if (typeof err === 'object' && err !== null) {
+                const maybe = err as { response?: { data?: { message?: unknown } } };
+                if (typeof maybe.response?.data?.message === 'string') message = maybe.response.data.message;
+            } else {
+                message = String(err);
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Mic, MicOff } from 'lucide-react';
 
 interface VoiceInputProps {
     onTranscript: (text: string) => void;
@@ -9,61 +9,94 @@ interface VoiceInputProps {
     placeholder?: string;
 }
 
-// Add type definitions for Web Speech API
-declare global {
-    interface Window {
-        SpeechRecognition: any;
-        webkitSpeechRecognition: any;
-    }
-}
-
 export const VoiceInput = ({ onTranscript, isListening: externalIsListening, onToggle, className = '' }: VoiceInputProps) => {
     const [isListening, setIsListening] = useState(false);
-    const [isSupported, setIsSupported] = useState(true);
-    const recognitionRef = useRef<any>(null);
+    const isSupported = (('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window));
+
+    type MinimalEvent = {
+        resultIndex: number;
+        results: Array<{ isFinal: boolean; 0: { transcript: string } }>;
+    };
+
+    type MinimalRecognition = {
+        continuous: boolean;
+        interimResults: boolean;
+        lang: string;
+        start: () => void;
+        stop: () => void;
+        onresult: ((e: MinimalEvent) => void) | null;
+        onerror: ((e: unknown) => void) | null;
+        onend: (() => void) | null;
+    };
+
+    const recognitionRef = useRef<MinimalRecognition | null>(null);
+
+    const startListening = useCallback(() => {
+        if (!recognitionRef.current || !isSupported) return;
+        try {
+            recognitionRef.current.start();
+            setIsListening(true);
+            onToggle?.(true);
+        } catch (e) {
+            console.error(e);
+        }
+    }, [isSupported, onToggle]);
+
+    const stopListening = useCallback(() => {
+        if (!recognitionRef.current) return;
+        recognitionRef.current.stop();
+        setIsListening(false);
+        onToggle?.(false);
+    }, [onToggle]);
+
+    const toggleListening = useCallback(() => {
+        if (isListening) stopListening();
+        else startListening();
+    }, [isListening, startListening, stopListening]);
 
     useEffect(() => {
-        // Check browser support
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            setIsSupported(false);
-            return;
-        }
+        // If not supported, nothing to do
+        if (!isSupported) return;
 
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
+        type WindowWithSpeech = { SpeechRecognition?: { new(): unknown }, webkitSpeechRecognition?: { new(): unknown } };
+        const w = window as unknown as WindowWithSpeech;
+        const SpeechRecognition = w.SpeechRecognition || w.webkitSpeechRecognition;
+        if (!SpeechRecognition) return;
+        const recognition = new (SpeechRecognition as { new(): unknown })() as unknown as MinimalRecognition;
 
         recognition.continuous = true;
         recognition.interimResults = true;
         recognition.lang = 'en-US'; // Could be made dynamic
 
-        recognition.onresult = (event: any) => {
+
+        recognition.onresult = (event: MinimalEvent) => {
             let finalTranscript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     finalTranscript += event.results[i][0].transcript;
                 }
             }
-            if (finalTranscript) {
-                onTranscript(finalTranscript);
-            }
+            if (finalTranscript) onTranscript(finalTranscript);
         };
 
-        recognition.onerror = (event: any) => {
-            console.error('Speech recognition error', event.error);
-            if (event.error === 'not-allowed') {
-                alert('Microphone access denied. Please allow microphone access to use voice input.');
+        recognition.onerror = (event: unknown) => {
+            console.error('Speech recognition error', event);
+            // We cannot reliably inspect unknowns here; if permission denied, inform user
+            try {
+                const e = event as { error?: string };
+                if (e.error === 'not-allowed') {
+                    alert('Microphone access denied. Please allow microphone access to use voice input.');
+                }
+            } catch {
+                // ignore
             }
             stopListening();
         };
 
         recognition.onend = () => {
-            // If it stops but we think we are listening, restart (unless explicitly stopped)
-            // For now, let's just sync state
-            if (isListening) {
-                // recognition.start(); // Auto-restart if needed, but can be annoying
-                setIsListening(false);
-                onToggle?.(false);
-            }
+            // always sync state to stopped when recognition ends
+            setIsListening(false);
+            onToggle?.(false);
         };
 
         recognitionRef.current = recognition;
@@ -73,44 +106,18 @@ export const VoiceInput = ({ onTranscript, isListening: externalIsListening, onT
                 recognitionRef.current.stop();
             }
         };
-    }, []);
+    }, [stopListening, isSupported, onTranscript, onToggle]);
 
     // Sync with external state if provided
     useEffect(() => {
         if (typeof externalIsListening !== 'undefined' && externalIsListening !== isListening) {
-            if (externalIsListening) {
-                startListening();
-            } else {
-                stopListening();
-            }
+            // schedule to avoid calling setState synchronously inside effect
+            if (externalIsListening) setTimeout(startListening, 0);
+            else setTimeout(stopListening, 0);
         }
-    }, [externalIsListening]);
+    }, [externalIsListening, isListening, startListening, stopListening]);
 
-    const startListening = () => {
-        if (!recognitionRef.current || !isSupported) return;
-        try {
-            recognitionRef.current.start();
-            setIsListening(true);
-            onToggle?.(true);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const stopListening = () => {
-        if (!recognitionRef.current) return;
-        recognitionRef.current.stop();
-        setIsListening(false);
-        onToggle?.(false);
-    };
-
-    const toggleListening = () => {
-        if (isListening) {
-            stopListening();
-        } else {
-            startListening();
-        }
-    };
+    // functions defined above with stable identities via useCallback
 
     if (!isSupported) {
         return null; // Or render a disabled icon with tooltip

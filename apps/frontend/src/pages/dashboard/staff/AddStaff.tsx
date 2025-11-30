@@ -27,9 +27,17 @@ const AddStaff = () => {
         try {
             await api.post('/auth/staff', formData);
             navigate('/dashboard/staff');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Add staff error:', err);
-            setError(err.response?.data?.message || 'Failed to add staff');
+            let message = 'Failed to add staff';
+            if (err instanceof Error) message = err.message;
+            else if (typeof err === 'object' && err !== null) {
+                const maybe = err as { response?: { data?: { message?: unknown } } };
+                if (typeof maybe.response?.data?.message === 'string') message = maybe.response.data.message;
+            } else {
+                message = String(err);
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }
