@@ -25,7 +25,7 @@ jobs:
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/auth-service:${{ github.sha }}
         run: |
-          docker build --pull -t "$IMAGE" -f apps/auth-service/Dockerfile apps/auth-service
+          docker build --pull -t "$IMAGE" -f apps/auth-service/Dockerfile .
 
       - name: Push auth-service image
         env:
