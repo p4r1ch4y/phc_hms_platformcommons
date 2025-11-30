@@ -1,6 +1,24 @@
 # PHC Commons : Platform for Health Care Centers
 
+<div align="center">
+
+ [![PHC Logo](docs/assets/logo.png)](https://to_be_updated.com)
+
+**Manage your PHC in a Smarter Digital way under one place**
+
+*We take care of the documentation — so that you can focus more on caring*
+
+
+[Live Demo](https://example.com) • [Documentation](./docs/saas_guide.md) • [Architecture](./docs/system_design.md) • [Contributing](CONTRIBUTING.md)
+
+</div>
+
+# What is PHC Commons?
+
 A comprehensive Hospital Management System (HMS) designed for Primary Health Centres (PHCs) in India. This platform enables efficient patient management, consultation tracking, pharmacy inventory, and reporting, with a focus on usability and offline-first capabilities.
+
+
+
 
 ## Features
 - **Multi-Tenant Architecture**: Supports multiple PHCs with data isolation.
@@ -11,11 +29,43 @@ A comprehensive Hospital Management System (HMS) designed for Primary Health Cen
 - **Smart Triage**: Automated risk scoring based on vitals.
 - **OCR Integration**: Scan medical reports and IDs for quick data entry.
 
-## Tech Stack
+
+
+## How it's built?  The Tech Stack Behind PHC Commons
+
 - **Frontend**: React, Vite, Tailwind CSS
 - **Backend**: Node.js, Express (Microservices)
 - **Database**: PostgreSQL (Supabase), Prisma ORM
 - **Infrastructure**: Docker, Nginx/Express Gateway
+
+
+## Architecture Overview
+
+The platform follows a microservices architecture with schema-based multi-tenancy on PostgreSQL. An API Gateway routes requests to smaller services (auth, tenant management, patient, consultation, pharmacy, etc.).
+
+```mermaid
+flowchart TD
+  Client["Client (Browser / Mobile)"] -->|HTTPS| APIGW["API Gateway\n(Express)"]
+
+  subgraph Services
+    APIGW --> Auth["Auth Service"]
+    APIGW --> Tenant["Tenant Service"]
+    APIGW --> Patient["Patient Service"]
+    APIGW --> Consult["Consultation Service"]
+    APIGW --> Pharmacy["Pharmacy Service"]
+  end
+
+  subgraph DataLayer
+    Auth --> MgmtDB[("Management DB\n(prisma/management-client)")]
+    Tenant --> MgmtDB
+    Patient --> TenantDB[("Tenant DB (per-tenant schema)\n(prisma/tenant-client)")]
+    Consult --> TenantDB
+    Pharmacy --> TenantDB
+  end
+
+  APIGW ---|Proxies| Services
+```
+
 
 ## Getting Started
 
@@ -37,8 +87,25 @@ A comprehensive Hospital Management System (HMS) designed for Primary Health Cen
     ```
 
 3.  **Setup Environment Variables**:
+
+    Create `.env` in repo root with at least:
+
+    ```env
+    DATABASE_URL="postgresql://<user>:<pass>@<host>:5432/<db>"
+    JWT_SECRET="your_jwt_secret"
+    ```
+
+    
     - Copy `.env.example` to `.env` (if available) or create one based on `packages/database/.env`.
     - Ensure `DATABASE_URL` points to your Postgres instance.
+
+
+
+4. Start services (all in dev mode)
+
+```bash
+npm run dev
+```
 
 4.  **Run Database Migrations**:
     ```bash

@@ -1,0 +1,123 @@
+name: Backend CI/CD - Build Artifacts & Per-Service Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-artifacts:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-api-gateway: ${{ steps.upload-api.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Run workspace build (typecheck + compile)
+        run: npm run build
+
+      - name: Prepare API Gateway artifact
+        run: |
+          cd apps/api-gateway || exit 0
+          # include package.json so Azure can run install, include src/dist
+          tar -czf ../../api-gateway-artifact.tar.gz .
+
+      - name: Upload API Gateway artifact
+        id: upload-api
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-gateway-artifact
+          path: api-gateway-artifact.tar.gz
+
+      - name: Prepare Auth Service artifact
+        run: |
+          cd apps/auth-service || exit 0
+          tar -czf ../../auth-service-artifact.tar.gz .
+
+      - name: Upload Auth artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-service-artifact
+          path: auth-service-artifact.tar.gz
+
+      - name: Prepare Tenant Service artifact
+        run: |
+          cd apps/tenant-service || exit 0
+          tar -czf ../../tenant-service-artifact.tar.gz .
+
+      - name: Upload Tenant artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tenant-service-artifact
+          path: tenant-service-artifact.tar.gz
+
+  deploy-api-gateway:
+    runs-on: ubuntu-latest
+    needs: build-artifacts
+    steps:
+      - name: Download API Gateway artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-gateway-artifact
+
+      - name: Extract artifact
+        run: tar -xzf api-gateway-artifact.tar.gz -C ./api-gateway-deploy
+
+      - name: Deploy api-gateway to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_APP_API_GATEWAY_NAME }}
+          publish-profile: ${{ secrets.AZURE_APP_API_GATEWAY_PUBLISH_PROFILE }}
+          package: ./api-gateway-deploy
+
+  deploy-auth-service:
+    runs-on: ubuntu-latest
+    needs: build-artifacts
+    steps:
+      - name: Download Auth artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: auth-service-artifact
+
+      - name: Extract artifact
+        run: tar -xzf auth-service-artifact.tar.gz -C ./auth-service-deploy
+
+      - name: Deploy auth-service to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_APP_AUTH_SERVICE_NAME }}
+          publish-profile: ${{ secrets.AZURE_APP_AUTH_SERVICE_PUBLISH_PROFILE }}
+          package: ./auth-service-deploy
+
+  deploy-tenant-service:
+    runs-on: ubuntu-latest
+    needs: build-artifacts
+    steps:
+      - name: Download Tenant artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tenant-service-artifact
+
+      - name: Extract artifact
+        run: tar -xzf tenant-service-artifact.tar.gz -C ./tenant-service-deploy
+
+      - name: Deploy tenant-service to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_APP_TENANT_SERVICE_NAME }}
+          publish-profile: ${{ secrets.AZURE_APP_TENANT_SERVICE_PUBLISH_PROFILE }}
+          package: ./tenant-service-deploy
+
+# Rollback guidance:
+# - The build job uploads artifacts that are kept by GitHub Actions for a limited time.
+# - To rollback, re-run the appropriate deploy job and choose a previous workflow run's artifact
+#   (Actions -> workflow run -> Re-run jobs -> select the desired run with artifacts).
+# - For automated rollback logic, consider implementing deployment slots in Azure and swapping on failure.

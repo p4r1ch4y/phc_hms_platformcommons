@@ -24,97 +24,68 @@ Returns a JWT token.
   ```json
   {
     "token": "eyJhbGci...",
-    "user": { ... }
-  }
-  ```
+    # API Reference — PHC HMS
 
+    All public API traffic should be routed through the API Gateway (default: `http://localhost:3000` when running locally). The gateway proxies to service-specific routes (e.g. `/auth`, `/tenants`, `/patients`, `/consultations`, `/pharmacy`).
+
+    Authentication
+    --------------
+
+    Most endpoints require a Bearer JWT issued by the `Auth Service`. Include the header:
+
+    ```
+    Authorization: Bearer <token>
+    ```
+
+    For tenant-scoped operations also include the tenant header (if not present in the token):
+
+    ```
+    x-tenant-slug: <tenant-slug>
+    ```
+
+    1. Auth Service (`/auth`)
+      - POST `/auth/register` — Register a user (public, rate-limited). Body: `email`, `password`, optional `name`, `role`, `tenantId`.
+      - POST `/auth/login` — Login and receive `{ token, user }`.
+
+    Example login request
+
+    ```bash
+    curl -X POST http://localhost:3000/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{"email":"admin@demo.local","password":"P@ssw0rd"}'
+    ```
+
+    2. Tenant Service (`/tenants`)
+      - POST `/tenants` — Create a new tenant (Super Admin or public onboarding). Body: `name`, `slug`, `address`, `adminEmail`, `adminPassword`, `adminName`.
+      - GET `/tenants` — List tenants (Super Admin only).
+
+    3. Patient Service (`/patients`)
+      - POST `/patients` — Register a new patient (requires tenant context via header or token). Example body: `firstName`, `lastName`, `dateOfBirth`, `gender`, `phone`, `address`, `abhaId`.
+      - POST `/patients/:patientId/vitals` — Record vitals for a patient.
+      - GET `/patients` — List patients for the tenant (supports query params for pagination/filters).
+      - GET `/patients/:id` — Get patient details including the last 10 vitals and consultations.
+
+    4. Consultation Service (`/consultations`)
+      - POST `/consultations` — Create a consultation/appointment.
+      - PUT `/consultations/:id/diagnosis` — Update diagnosis/prescription (doctor-only in RBAC).
+      - GET `/consultations` — List consultations (supports `patientId` / `doctorId` filters).
+
+    5. Pharmacy Service (`/pharmacy`)
+      - POST `/pharmacy/medicine` — Add medicine.
+      - POST `/pharmacy/batch` — Add a batch for a medicine.
+      - GET `/pharmacy/inventory` — Get medicine inventory with batch totals.
+
+    Headers & common errors
+    -----------------------
+    - `400 Bad Request` — validation errors (Zod schema failures) return a structured JSON with `errors` array.
+    - `401 Unauthorized` — missing or invalid JWT.
+    - `403 Forbidden` — RBAC/authorization failure.
+    - `500 Internal Server Error` — server-side error (check logs). Avoid exposing internal stack traces in production.
+
+    Notes
+    -----
+    - Use `validateBody(...)` middleware provided by `@phc/common` for frontend forms to match server validation.
+    - All tenant-specific reads/writes must include tenant context; otherwise, the service will return `400` with `Tenant slug header missing`.
+
+    For a quick end-to-end smoke test see the `docs/misc/hosting_options.md` and the curl examples in the project root `scripts/` folder.
 ---
-
-## 2. Tenant Service
-**Base Path**: `/tenants`
-
-### Register New Hospital (Tenant)
-Onboards a new hospital and **automatically creates a dedicated database schema**.
-- **POST** `/`
-- **Body**:
-  ```json
-  {
-    "name": "Rural PHC Center 1",
-    "slug": "phc_center_1", // Must be unique, used for schema name
-    "address": "Village X, District Y",
-    "adminEmail": "admin@phc1.com",
-    "adminPassword": "password123",
-    "adminName": "Dr. Superintendent"
-  }
-  ```
-
-### List Tenants (Super Admin)
-- **GET** `/`
-- **Headers**: `Authorization: Bearer <token>`
-
----
-
-## 3. Patient Service
-**Base Path**: `/patients`
-**Headers Required**: `Authorization`, `x-tenant-slug`
-
-### Register Patient
-- **POST** `/`
-- **Body**:
-  ```json
-  {
-    "firstName": "Ramesh",
-    "lastName": "Kumar",
-    "dateOfBirth": "1985-06-15",
-    "gender": "MALE",
-    "phone": "9876543210",
-    "address": "House 12, Village X"
-  }
-  ```
-
-### Record Vitals
-- **POST** `/:patientId/vitals`
-- **Body**:
-  ```json
-  {
-    "temperature": 98.6,
-    "bloodPressure": "120/80",
-    "pulse": 72,
-    "weight": 65,
-    "height": 170
-  }
-  ```
-
-### List Patients
-- **GET** `/`
-
----
-
-## 4. Consultation Service
-**Base Path**: `/consultations`
-**Headers Required**: `Authorization`, `x-tenant-slug`
-
-### Book Appointment / Create Consultation
-- **POST** `/`
-- **Body**:
-  ```json
-  {
-    "patientId": "uuid-of-patient",
-    "doctorId": "uuid-of-doctor" // Optional, defaults to logged-in user
-  }
-  ```
-
-### Update Diagnosis & Prescription
-- **PUT** `/:id/diagnosis`
-- **Body**:
-  ```json
-  {
-    "diagnosis": "Viral Fever",
-    "prescription": "Paracetamol 500mg BD for 3 days",
-    "status": "COMPLETED"
-  }
-  ```
-
-### List Consultations
-- **GET** `/`
-- **Query Params**: `?patientId=...` or `?doctorId=...`

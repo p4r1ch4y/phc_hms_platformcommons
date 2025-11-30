@@ -2,7 +2,10 @@ const { Client } = require('pg');
 require('dotenv').config({ path: '../.env' });
 
 const client = new Client({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:vwm6A9xqYTyhKbUo@db.ylqgpvgwjbyghriydrdl.supabase.co:5432/postgres'
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false,
+    },
 });
 
 async function run() {

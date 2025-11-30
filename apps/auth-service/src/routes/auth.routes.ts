@@ -9,13 +9,14 @@ import {
     authRateLimiter,
     registrationRateLimiter,
     writeRateLimiter,
-    apiRateLimiter
+    apiRateLimiter,
+    RegisterSchema
 } from '@phc/common';
 
 const router = Router();
 
-// Public routes with rate limiting
-router.post('/register', registrationRateLimiter, register);
+// Public routes with rate limiting and validation
+router.post('/register', registrationRateLimiter, validateBody(RegisterSchema), register);
 router.post('/login', authRateLimiter, validateBody(LoginSchema), login);
 
 // Protected routes with rate limiting applied before auth

@@ -6,7 +6,8 @@ import dotenv from 'dotenv';
 import tenantRoutes from './routes/tenant.routes';
 
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '../../../packages/database/.env') });
+// Load environment from repo root so services running individually pick up the same config
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const app = express();
 const port = process.env.PORT || 3002;
