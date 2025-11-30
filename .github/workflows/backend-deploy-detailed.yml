@@ -76,6 +76,42 @@ jobs:
           mkdir -p ./api-gateway-deploy
           tar -xzf api-gateway-artifact.tar.gz -C ./api-gateway-deploy
 
+      - name: Set App Settings (DATABASE_URL, JWT_SECRET) via Kudu API
+        env:
+          PUBLISH_PROFILE: ${{ secrets.AZURE_APP_API_GATEWAY_PUBLISH_PROFILE }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          set -euo pipefail
+          echo "$PUBLISH_PROFILE" > publish_profile.xml
+          python3 - <<'PY'
+import xml.etree.ElementTree as ET
+import base64, json, urllib.request, sys
+
+tree = ET.parse('publish_profile.xml')
+root = tree.getroot()
+user = None
+pwd = None
+publish_url = None
+for p in root.findall('publishProfile'):
+    if p.get('publishMethod') == 'MSDeploy':
+        user = p.get('userName')
+        pwd = p.get('userPWD')
+        publish_url = p.get('publishUrl')
+        break
+if not (user and pwd and publish_url):
+    sys.exit('Could not parse publish profile for MSDeploy entry')
+scm = publish_url.split(':')[0]
+api = f"https://{scm}/api/settings"
+settings = {"DATABASE_URL": "${DATABASE_URL}", "JWT_SECRET": "${JWT_SECRET}"}
+data = json.dumps(settings).encode('utf-8')
+req = urllib.request.Request(api, data=data, headers={'Content-Type': 'application/json'})
+auth = base64.b64encode(f"{user}:{pwd}".encode()).decode()
+req.add_header('Authorization', 'Basic ' + auth)
+with urllib.request.urlopen(req) as resp:
+    print(resp.read().decode())
+PY
+
       - name: Deploy api-gateway to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
@@ -97,6 +133,42 @@ jobs:
           mkdir -p ./auth-service-deploy
           tar -xzf auth-service-artifact.tar.gz -C ./auth-service-deploy
 
+      - name: Set App Settings (DATABASE_URL, JWT_SECRET) via Kudu API
+        env:
+          PUBLISH_PROFILE: ${{ secrets.AZURE_APP_AUTH_SERVICE_PUBLISH_PROFILE }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          set -euo pipefail
+          echo "$PUBLISH_PROFILE" > publish_profile.xml
+          python3 - <<'PY'
+import xml.etree.ElementTree as ET
+import base64, json, urllib.request, sys
+
+tree = ET.parse('publish_profile.xml')
+root = tree.getroot()
+user = None
+pwd = None
+publish_url = None
+for p in root.findall('publishProfile'):
+    if p.get('publishMethod') == 'MSDeploy':
+        user = p.get('userName')
+        pwd = p.get('userPWD')
+        publish_url = p.get('publishUrl')
+        break
+if not (user and pwd and publish_url):
+    sys.exit('Could not parse publish profile for MSDeploy entry')
+scm = publish_url.split(':')[0]
+api = f"https://{scm}/api/settings"
+settings = {"DATABASE_URL": "${DATABASE_URL}", "JWT_SECRET": "${JWT_SECRET}"}
+data = json.dumps(settings).encode('utf-8')
+req = urllib.request.Request(api, data=data, headers={'Content-Type': 'application/json'})
+auth = base64.b64encode(f"{user}:{pwd}".encode()).decode()
+req.add_header('Authorization', 'Basic ' + auth)
+with urllib.request.urlopen(req) as resp:
+    print(resp.read().decode())
+PY
+
       - name: Deploy auth-service to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
@@ -117,6 +189,42 @@ jobs:
         run: |
           mkdir -p ./tenant-service-deploy
           tar -xzf tenant-service-artifact.tar.gz -C ./tenant-service-deploy
+
+      - name: Set App Settings (DATABASE_URL, JWT_SECRET) via Kudu API
+        env:
+          PUBLISH_PROFILE: ${{ secrets.AZURE_APP_TENANT_SERVICE_PUBLISH_PROFILE }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          set -euo pipefail
+          echo "$PUBLISH_PROFILE" > publish_profile.xml
+          python3 - <<'PY'
+import xml.etree.ElementTree as ET
+import base64, json, urllib.request, sys
+
+tree = ET.parse('publish_profile.xml')
+root = tree.getroot()
+user = None
+pwd = None
+publish_url = None
+for p in root.findall('publishProfile'):
+    if p.get('publishMethod') == 'MSDeploy':
+        user = p.get('userName')
+        pwd = p.get('userPWD')
+        publish_url = p.get('publishUrl')
+        break
+if not (user and pwd and publish_url):
+    sys.exit('Could not parse publish profile for MSDeploy entry')
+scm = publish_url.split(':')[0]
+api = f"https://{scm}/api/settings"
+settings = {"DATABASE_URL": "${DATABASE_URL}", "JWT_SECRET": "${JWT_SECRET}"}
+data = json.dumps(settings).encode('utf-8')
+req = urllib.request.Request(api, data=data, headers={'Content-Type': 'application/json'})
+auth = base64.b64encode(f"{user}:{pwd}".encode()).decode()
+req.add_header('Authorization', 'Basic ' + auth)
+with urllib.request.urlopen(req) as resp:
+    print(resp.read().decode())
+PY
 
       - name: Deploy tenant-service to Azure Web App
         uses: azure/webapps-deploy@v2
