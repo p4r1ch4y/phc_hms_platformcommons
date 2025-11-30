@@ -11,7 +11,7 @@ COPY apps/tenant-service ./apps/tenant-service
 RUN npm install
 
 WORKDIR /app/packages/database
-RUN npx prisma generate
+RUN npm run build
 
 WORKDIR /app/apps/tenant-service
 RUN npm run build

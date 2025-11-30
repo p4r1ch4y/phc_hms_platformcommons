@@ -18,7 +18,7 @@ RUN npm install
 
 # Generate Prisma Client
 WORKDIR /app/packages/database
-RUN npx prisma generate
+RUN npm run build
 
 # Build service
 WORKDIR /app/apps/api-gateway

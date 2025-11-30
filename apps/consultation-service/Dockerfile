@@ -11,7 +11,7 @@ COPY apps/consultation-service ./apps/consultation-service
 RUN npm install
 
 WORKDIR /app/packages/database
-RUN npx prisma generate
+RUN npm run build
 
 WORKDIR /app/apps/consultation-service
 RUN npm run build

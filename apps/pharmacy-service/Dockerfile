@@ -11,7 +11,7 @@ COPY apps/pharmacy-service ./apps/pharmacy-service
 RUN npm install
 
 WORKDIR /app/packages/database
-RUN npx prisma generate
+RUN npm run build
 
 WORKDIR /app/apps/pharmacy-service
 RUN npm run build

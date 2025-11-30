@@ -11,7 +11,7 @@ COPY apps/auth-service ./apps/auth-service
 RUN npm install
 
 WORKDIR /app/packages/database
-RUN npx prisma generate
+RUN npm run build
 
 WORKDIR /app/apps/auth-service
 RUN npm run build
