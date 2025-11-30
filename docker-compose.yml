@@ -40,6 +40,7 @@ services:
       - pharmacy-service
     networks:
       - phc-network
+        - DATABASE_URL=${DATABASE_URL}
 
   auth-service:
     build:
@@ -54,6 +55,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+        - DATABASE_URL=${DATABASE_URL}
     networks:
       - phc-network
 
@@ -68,6 +70,7 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
       - JWT_SECRET=${JWT_SECRET}
     depends_on:
+        - DATABASE_URL=${DATABASE_URL}
       postgres:
         condition: service_healthy
     networks:
@@ -82,6 +85,7 @@ services:
     environment:
       - PORT=3003
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/phc_hms
+        - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
     depends_on:
       postgres:
