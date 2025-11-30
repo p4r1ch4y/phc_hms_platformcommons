@@ -2,21 +2,24 @@
 
 <div align="center">
 
- [![PHC Logo](docs/assets/logo.png)](https://to_be_updated.com)
+ [![PHC Logo](docs/assets/logo.png)](https://phccommons.vercel.app/)
 
 **Manage your PHC in a Smarter Digital way under one place**
 
 *We take care of the documentation — so that you can focus more on caring*
 
 
-[Live Demo](https://example.com) • [Documentation](./docs/saas_guide.md) • [Architecture](./docs/system_design.md) • [Contributing](CONTRIBUTING.md)
+[Live Demo](https://phccommons.vercel.app/) • [Documentation](./docs/saas_guide.md) • [Architecture](./docs/system_design.md) • [Contributing](CONTRIBUTING.md)
 
 </div>
 
 # What is PHC Commons?
 
-A comprehensive Hospital Management System (HMS) designed for Primary Health Centres (PHCs) in India. This platform enables efficient patient management, consultation tracking, pharmacy inventory, and reporting, with a focus on usability and offline-first capabilities.
+A comprehensive Hospital Management System (HMS) designed for Primary Health Centres (PHCs) in India.
 
+Built during Hackarena 2.0 Hackathon by [Platform Commons](https://plaformcommons.org/) and [Masai School](https://masaischool.com)
+
+This platform enables efficient patient management, consultation tracking, pharmacy inventory, and reporting, with a focus on usability and offline-first capabilities.
 
 
 
@@ -30,111 +33,136 @@ A comprehensive Hospital Management System (HMS) designed for Primary Health Cen
 - **OCR Integration**: Scan medical reports and IDs for quick data entry.
 
 
-
-## How it's built?  The Tech Stack Behind PHC Commons
-
-- **Frontend**: React, Vite, Tailwind CSS
-- **Backend**: Node.js, Express (Microservices)
-- **Database**: PostgreSQL (Supabase), Prisma ORM
-- **Infrastructure**: Docker, Nginx/Express Gateway
-
-
 ## Architecture Overview
 
 The platform follows a microservices architecture with schema-based multi-tenancy on PostgreSQL. An API Gateway routes requests to smaller services (auth, tenant management, patient, consultation, pharmacy, etc.).
 
-```mermaid
-flowchart TD
-  Client["Client (Browser / Mobile)"] -->|HTTPS| APIGW["API Gateway\n(Express)"]
+See `docs/system_design.md` for the full architecture and diagrams.
 
-  subgraph Services
-    APIGW --> Auth["Auth Service"]
-    APIGW --> Tenant["Tenant Service"]
-    APIGW --> Patient["Patient Service"]
-    APIGW --> Consult["Consultation Service"]
-    APIGW --> Pharmacy["Pharmacy Service"]
-  end
+## 🌟 Features
 
-  subgraph DataLayer
-    Auth --> MgmtDB[("Management DB\n(prisma/management-client)")]
-    Tenant --> MgmtDB
-    Patient --> TenantDB[("Tenant DB (per-tenant schema)\n(prisma/tenant-client)")]
-    Consult --> TenantDB
-    Pharmacy --> TenantDB
-  end
+![Lamding Page](/docs/assets/landingPage_screenshot.png )
 
-  APIGW ---|Proxies| Services
-```
+### Core Functionality
+
+- Hospital and PHC Onboarding: Self-service registration for Primary Health Centres and small hospitals with tenant isolation per facility.
+- End-to-End Patient Flow: Registration → Vitals capture → Doctor consultation → Diagnosis → Prescription → Pharmacy and Lab.
+- Role-Based Workspaces: Dedicated views and menus for admin, doctor, nurse, lab technician, pharmacy, and front-desk operators.
+- PHC-Friendly OPD Queue and Visit/Prescription Records.
+- Inventory and Pharmacy Basics: Medicine catalogue, stock tracking, and prescription dispensing flows.
+
+### AI-Assisted and Paper-to-Digital
+
+![OCR and Image Scan or Upload Function](/docs/assets/ORC_Tessaract_screenshot.png)
 
 
-## Getting Started
+- Paper Record Upload and OCR-ready pipeline (hooks available to plug external providers).
+- Structured data mapping to patient profiles, visits, and prescriptions.
+
+## 🚀 Tech Stack
+
+### Frontend
+
+- React + Vite in a modular monorepo (npm workspaces).
+- TypeScript, Tailwind CSS, React Router, React Query (or similar).
+
+### Backend and Platform
+
+- Node.js services organized under `apps/`.
+- Express for HTTP APIs and Prisma ORM for Postgres schema and migrations.
+- Multi-tenant design using per-tenant schemas and a management database.
+
+### Infrastructure and Deployment
+
+- Monorepo using npm workspaces.
+- Docker Compose for local integration (Postgres on host port `5434` by default in `docker-compose.yml`).
+- CI/CD via GitHub Actions; optional Render/other cloud deploys.
+
+## 📦 Quick Start (Local Development)
 
 ### Prerequisites
-- Node.js (v18+)
-- Docker & Docker Compose
-- PostgreSQL (or Supabase account)
 
-### Local Development
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/p4r1ch4y/phc_platformcommons.git
-    cd phc_platformcommons
-    ```
+- Node.js 18+ and npm
+- Docker & Docker Compose (optional, recommended for full integration)
+- PostgreSQL (or Supabase project)
 
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
+### Installation
 
-3.  **Setup Environment Variables**:
+1. Clone and install:
 
-    Create `.env` in repo root with at least:
+   ```bash
+   git clone https://github.com/p4r1ch4y/phc_hms_platformcommons.git
+   cd phc_hms_platformcommons
+   npm install
+   ```
 
-    ```env
-    DATABASE_URL="postgresql://<user>:<pass>@<host>:5432/<db>"
-    JWT_SECRET="your_jwt_secret"
-    ```
+2. Environment setup:
 
-    
-    - Copy `.env.example` to `.env` (if available) or create one based on `packages/database/.env`.
-    - Ensure `DATABASE_URL` points to your Postgres instance.
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` and set at least `DATABASE_URL` and `JWT_SECRET`. Example values are in `.env.example`.
+
+3. Database setup (Prisma):
+
+   ```bash
+   npx prisma migrate dev --schema=packages/database/prisma/schema.prisma
+   ```
+
+4. Run services:
+
+   ```bash
+   # start all services (root workspace script)
+   npm run dev
+
+   # or run one workspace
+   npm run dev -w apps/api-gateway
+   npm run dev -w apps/auth-service
+   npm run dev -w apps/frontend
+   ```
+
+5. Open in browser:
+
+- Frontend (Vite): http://localhost:5173
+- API Gateway: http://localhost:<api-gateway-port>
 
 
+### Infrastructure and Deployment
 
-4. Start services (all in dev mode)
+- Monorepo with npm workspaces for apps and shared packages.
+- Frontend hosting on:
+  - Vercel free tier for smoother previews and environment management.
+- Backend services on Azure App Service
+- Database on Supabase free-tier PostgreSQL.
+- GitHub Actions for CI/CD (linting, tests, and automated deployments).
 
-```bash
-npm run dev
-```
 
-4.  **Run Database Migrations**:
-    ```bash
-    npx prisma migrate dev --schema=packages/database/prisma/schema.prisma
-    ```
+Notes
+- When running in Docker Compose, Postgres is mapped to host port `5434` (see `docker-compose.yml`).
+- After changing Prisma schemas, run `npm run -w packages/database generate` to refresh generated clients.
 
-5.  **Start Services**:
-    ```bash
-    npm run dev
-    ```
-    This starts all microservices and the frontend concurrently.
+## Getting Started (short)
 
-### Deployment
-
-#### Docker (Local/VPS)
-```bash
-docker-compose up --build -d
-```
-
-#### Render (Cloud)
-This repository includes a `render.yaml` blueprint for easy deployment on Render.
-1.  Connect your GitHub repository to Render.
-2.  Select "Blueprints" and choose this repo.
-3.  Render will automatically detect the `render.yaml` and prompt for environment variables.
+- Install: `npm install`
+- Copy `.env.example` → `.env` and fill values
+- Run migrations: `npx prisma migrate dev --schema=packages/database/prisma/schema.prisma`
+- Start dev: `npm run dev`
 
 ## Documentation
+
 - [Architecture Overview](docs/architecture.md)
+- [System Design](docs/system_design.md)
 - [API Reference](docs/api_reference.md)
 - [SaaS Guide](docs/saas_guide.md)
 
 ## Contributing
+
 Please read the [Contribution Guidelines](CONTRIBUTING.md) before submitting a Pull Request.
+
+## License
+
+See `LICENSE` in the repo (if present) or add an appropriate license for your project.
+
+
+Built With Love and Care 

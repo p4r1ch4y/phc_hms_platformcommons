@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { getTenantClient } from '../utils/tenant-db';
+import type { PrismaClient as PharmacyClient } from '@phc/database';
 
 // Type definitions for Prisma query results
 interface Batch {
@@ -36,7 +37,7 @@ export const addMedicine = async (req: Request, res: Response) => {
 
         if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
 
-        const client = getTenantClient(tenantSlug);
+        const client = getTenantClient(tenantSlug) as any;
 
         // Check if medicine exists
         const existingMedicine = await client.medicine.findFirst({
@@ -70,7 +71,7 @@ export const addBatch = async (req: Request, res: Response) => {
 
         if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
 
-        const client = getTenantClient(tenantSlug);
+        const client = getTenantClient(tenantSlug) as any;
 
         const batch = await client.batch.create({
             data: {
@@ -94,7 +95,7 @@ export const getInventory = async (req: Request, res: Response) => {
         const tenantSlug = req.headers['x-tenant-slug'] as string;
         if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
 
-        const client = getTenantClient(tenantSlug);
+        const client = getTenantClient(tenantSlug) as any;
 
         const inventory: MedicineWithBatches[] = await client.medicine.findMany({
             include: {
@@ -134,7 +135,7 @@ export const getLowStockMedicines = async (req: Request, res: Response) => {
         const tenantSlug = req.headers['x-tenant-slug'] as string;
         if (!tenantSlug) return res.status(400).json({ message: 'Tenant slug header missing' });
 
-        const client = getTenantClient(tenantSlug);
+        const client = getTenantClient(tenantSlug) as any;
 
         // Fetch all medicines with their batches
         const inventory: MedicineWithBatches[] = await client.medicine.findMany({

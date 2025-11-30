@@ -1,8 +1,8 @@
-import { PrismaClient } from '@phc/database/generated/pharmacy-client';
+import { PrismaClient as PharmacyClient } from '@phc/database';
 
-const clients: Record<string, PrismaClient> = {};
+const clients: Record<string, PharmacyClient> = {};
 
-export const getTenantClient = (tenantSlug: string): PrismaClient => {
+export const getTenantClient = (tenantSlug: string): PharmacyClient => {
     if (!clients[tenantSlug]) {
         // In a real scenario, we would construct the database URL dynamically based on the tenant
         // For this hackathon/MVP, we might use the same DB but different schemas
@@ -20,7 +20,7 @@ export const getTenantClient = (tenantSlug: string): PrismaClient => {
         console.log(`[Pharmacy] DB URL: ${databaseUrl.replace(/:[^:@]*@/, ':****@')}`); // Hide password
         console.log(`[Pharmacy] Tenant URL: ${tenantUrl.replace(/:[^:@]*@/, ':****@')}`);
 
-        clients[tenantSlug] = new PrismaClient({
+        clients[tenantSlug] = new PharmacyClient({
             datasources: {
                 db: {
                     url: tenantUrl
