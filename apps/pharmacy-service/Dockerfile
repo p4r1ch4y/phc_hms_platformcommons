@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-bullseye AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN npm run build
 WORKDIR /app/apps/pharmacy-service
 RUN npm run build
 
-FROM node:18-alpine
+FROM node:18-bullseye
 
 WORKDIR /app
 

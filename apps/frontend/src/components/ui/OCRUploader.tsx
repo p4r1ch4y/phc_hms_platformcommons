@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 // import { createWorker } from 'tesseract.js';
-import { Upload, FileText, X, Loader2, ScanLine } from 'lucide-react';
+import { FileText, X, Loader2, ScanLine } from 'lucide-react';
 
 interface OCRUploaderProps {
     onTextExtracted: (text: string) => void;

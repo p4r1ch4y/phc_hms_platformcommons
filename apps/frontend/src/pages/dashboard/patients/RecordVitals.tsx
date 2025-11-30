@@ -17,7 +17,6 @@ const RecordVitals = () => {
         pulse: '',
         weight: '',
         height: '',
-        height: '',
         bloodSugar: '',
         triageNote: ''
     });
@@ -47,14 +46,14 @@ const RecordVitals = () => {
         const vitals = {
             temperature: parseFloat(formData.temperature),
             bloodPressure: formData.bloodPressure,
-            pulse: parseInt(formData.pulse),
-            bloodSugar: parseFloat(formData.bloodSugar),
-            weight: parseFloat(formData.weight), // Not used for risk but part of input
-            height: parseFloat(formData.height)
+            pulse: Number.isNaN(parseInt(formData.pulse)) ? undefined : parseInt(formData.pulse),
+            bloodSugar: Number.isNaN(parseFloat(formData.bloodSugar)) ? undefined : parseFloat(formData.bloodSugar),
+            weight: Number.isNaN(parseFloat(formData.weight)) ? undefined : parseFloat(formData.weight), // Not used for risk but part of input
+            height: Number.isNaN(parseFloat(formData.height)) ? undefined : parseFloat(formData.height)
         };
         // Simple check to see if we have enough data to calculate something
         if (vitals.bloodPressure || vitals.temperature || vitals.bloodSugar || vitals.pulse) {
-            setRisk(calculateRisk(vitals as any));
+            setRisk(calculateRisk(vitals));
         }
     }, [formData]);
 
@@ -83,9 +82,17 @@ const RecordVitals = () => {
                 triageNote: formData.triageNote
             });
             navigate('/dashboard/patients');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Vitals recording error:', err);
-            setError(err.response?.data?.message || 'Failed to record vitals');
+            let message = 'Failed to record vitals';
+            if (err instanceof Error) message = err.message;
+            else if (typeof err === 'object' && err !== null) {
+                const maybe = err as { response?: { data?: { message?: unknown } } };
+                if (typeof maybe.response?.data?.message === 'string') message = maybe.response.data.message;
+            } else {
+                message = String(err);
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }

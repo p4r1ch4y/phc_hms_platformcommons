@@ -1,0 +1,100 @@
+services:
+  # Frontend (Docker)
+  - type: web
+    name: phc-frontend-docker
+    env: docker
+    dockerfilePath: ./apps/frontend/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: phc-api-gateway-docker
+          property: host
+
+  # API Gateway (Docker)
+  - type: web
+    name: phc-api-gateway-docker
+    env: docker
+    dockerfilePath: ./apps/api-gateway/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: AUTH_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-auth-service-docker
+          property: host
+      - key: TENANT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-tenant-service-docker
+          property: host
+      - key: PATIENT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-patient-service-docker
+          property: host
+      - key: CONSULTATION_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-consultation-service-docker
+          property: host
+      - key: PHARMACY_SERVICE_URL
+        fromService:
+          type: pserv
+          name: phc-pharmacy-service-docker
+          property: host
+
+  # Microservices (Docker)
+  - type: pserv
+    name: phc-auth-service-docker
+    env: docker
+    dockerfilePath: ./apps/auth-service/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: pserv
+    name: phc-tenant-service-docker
+    env: docker
+    dockerfilePath: ./apps/tenant-service/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+
+  - type: pserv
+    name: phc-patient-service-docker
+    env: docker
+    dockerfilePath: ./apps/patient-service/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: pserv
+    name: phc-consultation-service-docker
+    env: docker
+    dockerfilePath: ./apps/consultation-service/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: pserv
+    name: phc-pharmacy-service-docker
+    env: docker
+    dockerfilePath: ./apps/pharmacy-service/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false

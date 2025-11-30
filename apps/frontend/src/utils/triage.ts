@@ -1,9 +1,11 @@
-export enum RiskLevel {
-    LOW = 'LOW',
-    MODERATE = 'MODERATE',
-    HIGH = 'HIGH',
-    CRITICAL = 'CRITICAL',
-}
+export const RiskLevel = {
+    LOW: 'LOW',
+    MODERATE: 'MODERATE',
+    HIGH: 'HIGH',
+    CRITICAL: 'CRITICAL',
+} as const;
+
+export type RiskLevel = (typeof RiskLevel)[keyof typeof RiskLevel];
 
 export interface VitalsInput {
     bloodPressure?: string; // e.g., "120/80"
@@ -19,7 +21,7 @@ export interface RiskAssessment {
 }
 
 export const calculateRisk = (vitals: VitalsInput): RiskAssessment => {
-    let riskLevel = RiskLevel.LOW;
+    let riskLevel: RiskLevel = RiskLevel.LOW;
     const notes: string[] = [];
 
     // Blood Pressure Check

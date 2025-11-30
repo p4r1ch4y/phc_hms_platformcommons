@@ -1,4 +1,5 @@
-import { Component, ReactNode } from 'react';
+import { Component } from 'react';
+import type { ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 interface Props {
@@ -69,7 +70,7 @@ export class ErrorBoundary extends Component<Props, State> {
                                 Go to Dashboard
                             </button>
                         </div>
-                        {process.env.NODE_ENV === 'development' && this.state.error?.stack && (
+                        {import.meta.env.DEV && this.state.error?.stack && (
                             <details className="mt-6 text-left">
                                 <summary className="cursor-pointer text-sm text-slate-500 hover:text-slate-700">
                                     Technical Details

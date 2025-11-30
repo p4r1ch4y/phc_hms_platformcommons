@@ -43,8 +43,9 @@ const NewConsultation = () => {
                         try {
                             const response = await api.get(`/patients/search?abhaId=${searchTerm}`);
                             setPatients([response.data]);
-                        } catch (err: any) {
-                            if (err.response?.status === 404) {
+                        } catch (err: unknown) {
+                            const maybe = err as { response?: { status?: number } };
+                            if (maybe.response?.status === 404) {
                                 setPatients([]); // Not found
                             } else {
                                 console.error(err);
@@ -90,9 +91,17 @@ const NewConsultation = () => {
                 notes: formData.notes
             });
             navigate('/dashboard/consultations');
-        } catch (err: any) {
+                } catch (err: unknown) {
             console.error('Consultation error:', err);
-            setError(err.response?.data?.message || 'Failed to create consultation');
+            let message = 'Failed to create consultation';
+            if (err instanceof Error) message = err.message;
+            else if (typeof err === 'object' && err !== null) {
+                const maybe = err as { response?: { data?: { message?: unknown } } };
+                if (typeof maybe.response?.data?.message === 'string') message = maybe.response.data.message;
+            } else {
+                message = String(err);
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }

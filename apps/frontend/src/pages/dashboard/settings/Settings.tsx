@@ -19,12 +19,17 @@ const Settings = () => {
                 type: 'success',
                 message: 'Successfully seeded PHC with dummy data! Check Patients and Pharmacy.'
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Seed error:', error);
-            setSeedStatus({
-                type: 'error',
-                message: error.response?.data?.message || 'Failed to seed data. Please try again.'
-            });
+            let message = 'Failed to seed data. Please try again.';
+            if (error instanceof Error) message = error.message;
+            else if (typeof error === 'object' && error !== null) {
+                const maybe = error as { response?: { data?: { message?: unknown } } };
+                if (typeof maybe.response?.data?.message === 'string') message = maybe.response.data.message;
+            } else {
+                message = String(error);
+            }
+            setSeedStatus({ type: 'error', message });
         } finally {
             setSeeding(false);
         }

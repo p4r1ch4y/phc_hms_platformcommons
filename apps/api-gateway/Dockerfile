@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-bullseye AS builder
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ WORKDIR /app/apps/api-gateway
 RUN npm run build
 
 # Production image
-FROM node:18-alpine
+FROM node:18-bullseye
 
 WORKDIR /app
 

@@ -30,8 +30,9 @@ const AddMedicine = () => {
                     lowStockThreshold: parseInt(formData.lowStockThreshold)
                 });
                 medicineId = medResponse.data.id;
-            } catch (error: any) {
-                if (error.response?.status === 400 && error.response?.data?.message === 'Medicine already exists') {
+            } catch (error: unknown) {
+                const err = error as { response?: { status?: number; data?: { message?: unknown } } };
+                if (err.response?.status === 400 && err.response?.data?.message === 'Medicine already exists') {
                     alert('Medicine already exists. Please use the "Add Batch" feature (to be implemented) or ensure unique name.');
                     setLoading(false);
                     return;

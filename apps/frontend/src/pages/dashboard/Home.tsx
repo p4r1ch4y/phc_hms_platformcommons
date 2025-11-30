@@ -24,8 +24,11 @@ const DashboardHome = () => {
     const [recentPatients, setRecentPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [highRiskPatients, setHighRiskPatients] = useState<any[]>([]);
-    const [lowStockMedicines, setLowStockMedicines] = useState<any[]>([]);
+    interface MedicineSummary { id: string; name: string; totalStock?: number; unit?: string }
+    interface HighRiskItem { patient: { id: string; firstName: string; lastName: string }; vital: { riskLevel?: string } }
+
+    const [highRiskPatients, setHighRiskPatients] = useState<HighRiskItem[]>([]);
+    const [lowStockMedicines, setLowStockMedicines] = useState<MedicineSummary[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -172,7 +175,7 @@ const DashboardHome = () => {
                 <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
                     <h2 className="font-bold text-slate-900 mb-4">Action Required</h2>
                     <div className="space-y-4">
-                        {lowStockMedicines.length > 0 && lowStockMedicines.map((med: any) => (
+                        {lowStockMedicines.length > 0 && lowStockMedicines.map((med: MedicineSummary) => (
                             <div key={med.id} className="p-4 bg-red-50 rounded-lg border border-red-100">
                                 <div className="flex gap-3">
                                     <AlertTriangle className="h-5 w-5 text-red-600 shrink-0" />
@@ -183,7 +186,7 @@ const DashboardHome = () => {
                                 </div>
                             </div>
                         ))}
-                        {highRiskPatients.length > 0 && highRiskPatients.map((item: any) => (
+                        {highRiskPatients.length > 0 && highRiskPatients.map((item: HighRiskItem) => (
                             <div key={item.patient.id} className="p-4 bg-orange-50 rounded-lg border border-orange-100">
                                 <div className="flex gap-3">
                                     <Activity className="h-5 w-5 text-orange-600 shrink-0" />

@@ -39,8 +39,16 @@ const Register = () => {
 
             // Auto login or redirect to login
             navigate('/login');
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            let message = 'Registration failed';
+            if (err instanceof Error) message = err.message;
+            else if (typeof err === 'object' && err !== null) {
+                const maybe = err as { message?: unknown };
+                if (typeof maybe.message === 'string') message = maybe.message;
+            } else {
+                message = String(err);
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }

@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-bullseye AS builder
 
 WORKDIR /app
 
@@ -12,11 +12,17 @@ RUN npm install
 
 WORKDIR /app/packages/database
 RUN npm run build
+ 
+WORKDIR /app/packages/common
+RUN npm run build
+RUN echo "-- prisma version --" && npx prisma --version || true
+RUN echo "-- generated clients listing --" && ls -la /app/packages/database/generated || true
+RUN echo "-- generated clients tree --" && find /app/packages/database/generated -maxdepth 2 -type d -print || true
 
 WORKDIR /app/apps/auth-service
 RUN npm run build
 
-FROM node:18-alpine
+FROM node:18-bullseye
 
 WORKDIR /app
 

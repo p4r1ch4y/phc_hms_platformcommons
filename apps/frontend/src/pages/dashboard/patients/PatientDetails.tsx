@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Activity, FileText, User, Calendar, Phone, MapPin, Edit2, X } from 'lucide-react';
 import api from '../../../api/client';
@@ -58,11 +58,8 @@ const PatientDetails = () => {
         abhaId: ''
     });
 
-    useEffect(() => {
-        fetchPatientDetails();
-    }, [id]);
-
-    const fetchPatientDetails = async () => {
+    const fetchPatientDetails = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await api.get(`/patients/${id}`);
             setPatient(response.data);
@@ -79,7 +76,11 @@ const PatientDetails = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id]);
+
+    useEffect(() => {
+        fetchPatientDetails();
+    }, [fetchPatientDetails]);
 
     const handleUpdatePatient = async (e: React.FormEvent) => {
         e.preventDefault();
