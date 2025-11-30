@@ -132,7 +132,7 @@ export const getConsultationStats = async (req: Request, res: Response) => {
         res.json({
             todayConsultations,
             pendingConsultations,
-            topDiagnoses: diagnosisStats.map(d => ({ name: d.diagnosis, value: d._count.diagnosis }))
+            topDiagnoses: diagnosisStats.map((d) => ({ name: d.diagnosis, value: d._count.diagnosis }))
         });
     } catch (error) {
         console.error('Get consultation stats error:', error);

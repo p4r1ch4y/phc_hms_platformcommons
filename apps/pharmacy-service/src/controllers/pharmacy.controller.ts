@@ -1,6 +1,33 @@
 import { Request, Response } from 'express';
 import { getTenantClient } from '../utils/tenant-db';
 
+// Type definitions for Prisma query results
+interface Batch {
+    id: string;
+    medicineId: string;
+    batchNumber: string;
+    expiryDate: Date;
+    quantity: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+interface MedicineWithBatches {
+    id: string;
+    name: string;
+    manufacturer: string | null;
+    unit: string;
+    lowStockThreshold: number;
+    createdAt: Date;
+    updatedAt: Date;
+    batches: Batch[];
+}
+
+interface MedicineWithStock extends MedicineWithBatches {
+    totalStock: number;
+    status?: string;
+}
+
 export const addMedicine = async (req: Request, res: Response) => {
     try {
         console.log('Add Medicine Request:', req.body);
@@ -69,7 +96,7 @@ export const getInventory = async (req: Request, res: Response) => {
 
         const client = getTenantClient(tenantSlug);
 
-        const inventory = await client.medicine.findMany({
+        const inventory: MedicineWithBatches[] = await client.medicine.findMany({
             include: {
                 batches: {
                     where: {
@@ -82,8 +109,8 @@ export const getInventory = async (req: Request, res: Response) => {
         });
 
         // Calculate total stock and status for each medicine
-        const processedInventory = inventory.map((med: any) => {
-            const totalStock = med.batches.reduce((sum: number, batch: any) => sum + batch.quantity, 0);
+        const processedInventory = inventory.map((med: MedicineWithBatches) => {
+            const totalStock = med.batches.reduce((sum: number, batch: Batch) => sum + batch.quantity, 0);
             let status = 'IN_STOCK';
             if (totalStock === 0) status = 'OUT_OF_STOCK';
             else if (totalStock < med.lowStockThreshold) status = 'LOW_STOCK';
@@ -110,7 +137,7 @@ export const getLowStockMedicines = async (req: Request, res: Response) => {
         const client = getTenantClient(tenantSlug);
 
         // Fetch all medicines with their batches
-        const inventory = await client.medicine.findMany({
+        const inventory: MedicineWithBatches[] = await client.medicine.findMany({
             include: {
                 batches: {
                     where: {
@@ -121,13 +148,13 @@ export const getLowStockMedicines = async (req: Request, res: Response) => {
         });
 
         // Filter for low stock
-        const lowStockMedicines = inventory.map((med: any) => {
-            const totalStock = med.batches.reduce((sum: number, batch: any) => sum + batch.quantity, 0);
+        const lowStockMedicines = inventory.map((med: MedicineWithBatches) => {
+            const totalStock = med.batches.reduce((sum: number, batch: Batch) => sum + batch.quantity, 0);
             return {
                 ...med,
                 totalStock
             };
-        }).filter((med: any) => med.totalStock <= med.lowStockThreshold);
+        }).filter((med: MedicineWithStock) => med.totalStock <= med.lowStockThreshold);
 
         res.json(lowStockMedicines);
     } catch (error) {

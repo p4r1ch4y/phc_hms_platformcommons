@@ -3,6 +3,32 @@ import { getTenantClient } from '../utils/tenant-db';
 import { managementClient } from '@phc/database';
 import { calculateRisk } from '../utils/triage';
 
+// Type definitions for custom result objects
+interface VitalWithPatient {
+    patientId: string;
+    riskLevel: string | null;
+    recordedAt: Date;
+    triageNote: string | null;
+    bloodPressure: string | null;
+    temperature: number | null;
+    patient: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    };
+}
+
+interface HighRiskPatientResult {
+    patient: VitalWithPatient['patient'];
+    vital: {
+        riskLevel: string | null;
+        recordedAt: Date;
+        triageNote: string | null;
+        bloodPressure: string | null;
+        temperature: number | null;
+    };
+}
+
 export const registerPatient = async (req: Request, res: Response) => {
     try {
         const { firstName, lastName, dateOfBirth, gender, phone, address, abhaId } = req.body;
@@ -279,7 +305,7 @@ export const getPatientStats = async (req: Request, res: Response) => {
         };
 
         const now = new Date();
-        patients.forEach(p => {
+        patients.forEach((p) => {
             const age = now.getFullYear() - p.dateOfBirth.getFullYear();
             if (age <= 12) ageGroups['0-12']++;
             else if (age <= 18) ageGroups['13-18']++;
@@ -290,7 +316,7 @@ export const getPatientStats = async (req: Request, res: Response) => {
         res.json({
             totalPatients,
             newPatients,
-            genderDistribution: genderStats.map(g => ({ name: g.gender, value: g._count.gender })),
+            genderDistribution: genderStats.map((g) => ({ name: g.gender, value: g._count.gender })),
             ageDistribution: Object.entries(ageGroups).map(([name, value]) => ({ name, value }))
         });
     } catch (error) {
@@ -328,8 +354,8 @@ export const getHighRiskPatients = async (req: Request, res: Response) => {
         });
 
         // Deduplicate patients (keep latest vital)
-        const patientMap = new Map();
-        highRiskVitals.forEach(vital => {
+        const patientMap = new Map<string, HighRiskPatientResult>();
+        highRiskVitals.forEach((vital) => {
             if (!patientMap.has(vital.patientId)) {
                 patientMap.set(vital.patientId, {
                     patient: vital.patient,
