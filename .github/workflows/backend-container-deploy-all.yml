@@ -1,0 +1,102 @@
+name: Backend Container Deploy - All Services
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: auth-service
+            dockerfile: apps/auth-service/Dockerfile
+            appName: ${{ secrets.AZURE_APP_AUTH_SERVICE_NAME }}
+          - service: api-gateway
+            dockerfile: apps/api-gateway/Dockerfile
+            appName: ${{ secrets.AZURE_APP_API_GATEWAY_NAME }}
+          - service: tenant-service
+            dockerfile: apps/tenant-service/Dockerfile
+            appName: ${{ secrets.AZURE_APP_TENANT_SERVICE_NAME }}
+          - service: patient-service
+            dockerfile: apps/patient-service/Dockerfile
+            appName: ${{ secrets.AZURE_APP_PATIENT_SERVICE_NAME }}
+          - service: consultation-service
+            dockerfile: apps/consultation-service/Dockerfile
+            appName: ${{ secrets.AZURE_APP_CONSULTATION_SERVICE_NAME }}
+          - service: pharmacy-service
+            dockerfile: apps/pharmacy-service/Dockerfile
+            appName: ${{ secrets.AZURE_APP_PHARMACY_SERVICE_NAME }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Generate Prisma clients
+        run: npm run -w packages/database generate
+
+      - name: Run workspace build
+        run: npm run build
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT || github.token }}
+
+      - name: Build image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ matrix.service }}:${{ github.sha }}
+        run: |
+          echo "Building $IMAGE from context . and Dockerfile ${{ matrix.dockerfile }}"
+          docker build --pull -t "$IMAGE" -f ${{ matrix.dockerfile }} .
+
+      - name: Push image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ matrix.service }}:${{ github.sha }}
+        run: |
+          docker push "$IMAGE"
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy image to Azure Web App
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ matrix.service }}:${{ github.sha }}
+          APP_NAME: ${{ matrix.appName }}
+        run: |
+          if [ -z "$APP_NAME" ]; then echo "No target app name provided for ${{ matrix.service }} - skipping"; exit 1; fi
+          az webapp config container set --name "$APP_NAME" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --docker-custom-image-name "$IMAGE"
+          az webapp config appsettings set --name "$APP_NAME" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --settings DATABASE_URL='${{ secrets.DATABASE_URL }}' JWT_SECRET='${{ secrets.JWT_SECRET }}'
+          az webapp restart --name "$APP_NAME" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}"
+
+      - name: Smoke test deployed app
+        env:
+          APP_NAME: ${{ matrix.appName }}
+        run: |
+          TARGET_URL="https://${APP_NAME}.azurewebsites.net/health"
+          echo "Checking $TARGET_URL"
+          for i in 1 2 3; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" "$TARGET_URL" || echo "000")
+            echo "Attempt $i - HTTP $status"
+            if [ "$status" = "200" ]; then exit 0; fi
+            sleep 5
+          done
+          echo "Smoke test failed for $APP_NAME"; exit 1
