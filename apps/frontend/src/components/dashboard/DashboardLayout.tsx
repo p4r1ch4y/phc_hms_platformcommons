@@ -48,6 +48,39 @@ const DashboardLayout = () => {
 
     const { theme, toggleTheme } = useTheme();
     const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null);
+    const [canInstall, setCanInstall] = useState(false);
+
+    useEffect(() => {
+        const updateInstallAvailability = () => {
+            const hasPrompt = !!(window as any).deferredPrompt;
+            const isLoggedIn = !!localStorage.getItem('token');
+            setCanInstall(hasPrompt && isLoggedIn);
+        };
+
+        window.addEventListener('pwa-install-available', updateInstallAvailability);
+        // also run on mount
+        updateInstallAvailability();
+
+        return () => window.removeEventListener('pwa-install-available', updateInstallAvailability);
+    }, []);
+
+    const handleInstallClick = async () => {
+        const prompt = (window as any).deferredPrompt;
+        if (!prompt) return;
+        try {
+            await prompt.prompt();
+            const choice = await prompt.userChoice;
+            if (choice && choice.outcome === 'accepted') {
+                console.log('PWA installation accepted');
+            } else {
+                console.log('PWA installation dismissed');
+            }
+        } catch (e) {
+            console.error('Error showing PWA install prompt', e);
+        }
+        (window as any).deferredPrompt = null;
+        setCanInstall(false);
+    };
 
     // Check backend health on mount
     useEffect(() => {
@@ -171,6 +204,15 @@ const DashboardLayout = () => {
                             <div className="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
                                 Backend offline
                             </div>
+                        )}
+                        {/* PWA install button - shown when prompt available and user logged in */}
+                        {canInstall && (
+                            <button
+                                onClick={handleInstallClick}
+                                className="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-medium"
+                            >
+                                Install App
+                            </button>
                         )}
                         {/* Theme toggle */}
                         <button

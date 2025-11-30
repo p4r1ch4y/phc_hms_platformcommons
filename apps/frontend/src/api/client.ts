@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000';
+// Prefer environment configuration (Vite) and fall back to the local docker-compose host port.
+// docker-compose maps the api-gateway container 3000 -> host 8000, so default to 8000 for local docker runs.
+const API_URL = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+    ? import.meta.env.VITE_API_URL
+    : 'http://localhost:8000';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -43,10 +47,18 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
-        // Network errors (no response) likely mean backend/gateway is down
+        // If we have no response, it's likely a network/backend outage
         if (!error.response) {
             try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
             console.error('API network error: backend may be offline', error);
+        } else {
+            // Server responded with a status (4xx/5xx) — log server error body for debugging
+            try { localStorage.setItem('backendAvailable', 'true'); } catch (e) { /* ignore */ }
+            console.error('API error response:', {
+                status: error.response.status,
+                data: error.response.data,
+                headers: error.response.headers
+            });
         }
         return Promise.reject(error);
     }

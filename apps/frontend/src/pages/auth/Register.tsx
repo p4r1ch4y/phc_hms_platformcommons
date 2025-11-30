@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Activity, Mail, Lock, User, Building, ArrowRight, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../../api/client';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -25,19 +26,9 @@ const Register = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:3000/tenants', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
+            await api.post('/tenants', formData);
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Registration failed');
-            }
-
-            // Auto login or redirect to login
+            // If the API returns success, redirect to login
             navigate('/login');
         } catch (err: unknown) {
             let message = 'Registration failed';
