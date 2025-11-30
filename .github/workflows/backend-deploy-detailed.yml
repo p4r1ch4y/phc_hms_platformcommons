@@ -72,7 +72,9 @@ jobs:
           name: api-gateway-artifact
 
       - name: Extract artifact
-        run: tar -xzf api-gateway-artifact.tar.gz -C ./api-gateway-deploy
+        run: |
+          mkdir -p ./api-gateway-deploy
+          tar -xzf api-gateway-artifact.tar.gz -C ./api-gateway-deploy
 
       - name: Deploy api-gateway to Azure Web App
         uses: azure/webapps-deploy@v2
@@ -91,7 +93,9 @@ jobs:
           name: auth-service-artifact
 
       - name: Extract artifact
-        run: tar -xzf auth-service-artifact.tar.gz -C ./auth-service-deploy
+        run: |
+          mkdir -p ./auth-service-deploy
+          tar -xzf auth-service-artifact.tar.gz -C ./auth-service-deploy
 
       - name: Deploy auth-service to Azure Web App
         uses: azure/webapps-deploy@v2
@@ -110,7 +114,9 @@ jobs:
           name: tenant-service-artifact
 
       - name: Extract artifact
-        run: tar -xzf tenant-service-artifact.tar.gz -C ./tenant-service-deploy
+        run: |
+          mkdir -p ./tenant-service-deploy
+          tar -xzf tenant-service-artifact.tar.gz -C ./tenant-service-deploy
 
       - name: Deploy tenant-service to Azure Web App
         uses: azure/webapps-deploy@v2
