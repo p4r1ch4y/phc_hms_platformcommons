@@ -355,16 +355,16 @@ export const getHighRiskPatients = async (req: Request, res: Response) => {
 
         // Deduplicate patients (keep latest vital)
         const patientMap = new Map<string, HighRiskPatientResult>();
-        highRiskVitals.forEach((vital) => {
-            if (!patientMap.has(vital.patientId)) {
-                patientMap.set(vital.patientId, {
-                    patient: vital.patient,
+        highRiskVitals.forEach((vitalRecord) => {
+            if (!patientMap.has(vitalRecord.patientId)) {
+                patientMap.set(vitalRecord.patientId, {
+                    patient: vitalRecord.patient,
                     vital: {
-                        riskLevel: vital.riskLevel,
-                        recordedAt: vital.recordedAt,
-                        triageNote: vital.triageNote,
-                        bloodPressure: vital.bloodPressure,
-                        temperature: vital.temperature
+                        riskLevel: vitalRecord.riskLevel,
+                        recordedAt: vitalRecord.recordedAt,
+                        triageNote: vitalRecord.triageNote,
+                        bloodPressure: vitalRecord.bloodPressure,
+                        temperature: vitalRecord.temperature
                     }
                 });
             }
