@@ -55,17 +55,17 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
                     <div className="bg-primary-600 p-2 rounded-xl">
                         <Activity className="h-8 w-8 text-white" />
                     </div>
                 </div>
-                <h2 className="mt-6 text-center text-3xl font-bold text-slate-900 font-heading">
+                <h2 className="mt-6 text-center text-3xl font-bold text-slate-900 dark:text-slate-100 font-heading">
                     Register your PHC
                 </h2>
-                <p className="mt-2 text-center text-sm text-slate-600">
+                <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
                     Already registered?{' '}
                     <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
                         Sign in here
@@ -74,20 +74,23 @@ const Register = () => {
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200">
+                <div className="bg-white dark:bg-slate-800 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200 dark:border-slate-700">
+                    <div className="mb-4 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-3 text-sm text-yellow-700 dark:text-yellow-200">
+                        Note: Backend services for this monorepo may not be running in your local dev environment. To load real data start the API Gateway and services (see README).  <br /> Sorry for the inconvenience! The Dev is having trouble hosting the backend. Thanks for checking this app, and please reach out on GitHub if you have questions.
+                    </div>
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-start gap-3">
-                                <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
-                                <p className="text-sm text-red-700">{error}</p>
+                            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4 flex items-start gap-3">
+                                <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-200 mt-0.5" />
+                                <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
                             </div>
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700">PHC Name</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">PHC Name</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Building className="h-5 w-5 text-slate-400" />
+                                    <Building className="h-5 w-5 text-slate-400 dark:text-slate-400" />
                                 </div>
                                 <input
                                     name="name"
@@ -95,17 +98,17 @@ const Register = () => {
                                     required
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2.5"
+                                    className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2.5"
                                     placeholder="Primary Health Centre, Village X"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700">PHC Slug (Unique ID)</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">PHC Slug (Unique ID)</label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Activity className="h-5 w-5 text-slate-400" />
+                                    <Activity className="h-5 w-5 text-slate-400 dark:text-slate-400" />
                                 </div>
                                 <input
                                     name="slug"
@@ -113,14 +116,14 @@ const Register = () => {
                                     required
                                     value={formData.slug}
                                     onChange={handleChange}
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2.5"
+                                    className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2.5"
                                     placeholder="phc_village_x"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700">Address</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Address</label>
                             <div className="mt-1">
                                 <input
                                     name="address"
@@ -128,21 +131,21 @@ const Register = () => {
                                     required
                                     value={formData.address}
                                     onChange={handleChange}
-                                    className="block w-full sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2.5 px-3"
+                                    className="block w-full sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2.5 px-3"
                                     placeholder="Full Address"
                                 />
                             </div>
                         </div>
 
                         <div className="border-t border-slate-200 pt-4">
-                            <h3 className="text-sm font-medium text-slate-900 mb-4">Admin Account</h3>
+                            <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-4">Admin Account</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700">Admin Name</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Admin Name</label>
                                     <div className="mt-1 relative rounded-md shadow-sm">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <User className="h-5 w-5 text-slate-400" />
+                                            <User className="h-5 w-5 text-slate-400 dark:text-slate-400" />
                                         </div>
                                         <input
                                             name="adminName"
@@ -150,17 +153,17 @@ const Register = () => {
                                             required
                                             value={formData.adminName}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2.5"
+                                            className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2.5"
                                             placeholder="Dr. Name"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700">Admin Email</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Admin Email</label>
                                     <div className="mt-1 relative rounded-md shadow-sm">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Mail className="h-5 w-5 text-slate-400" />
+                                            <Mail className="h-5 w-5 text-slate-400 dark:text-slate-400" />
                                         </div>
                                         <input
                                             name="adminEmail"
@@ -168,17 +171,17 @@ const Register = () => {
                                             required
                                             value={formData.adminEmail}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2.5"
+                                            className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2.5"
                                             placeholder="admin@phc.org"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700">Password</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Password</label>
                                     <div className="mt-1 relative rounded-md shadow-sm">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Lock className="h-5 w-5 text-slate-400" />
+                                            <Lock className="h-5 w-5 text-slate-400 dark:text-slate-400" />
                                         </div>
                                         <input
                                             name="adminPassword"
@@ -186,7 +189,7 @@ const Register = () => {
                                             required
                                             value={formData.adminPassword}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2.5"
+                                            className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2.5"
                                             placeholder="••••••••"
                                         />
                                     </div>

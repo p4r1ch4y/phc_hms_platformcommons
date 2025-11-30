@@ -45,13 +45,13 @@ export class ErrorBoundary extends Component<Props, State> {
             return (
                 <div className="min-h-[400px] flex items-center justify-center p-8">
                     <div className="text-center max-w-md">
-                        <div className="bg-red-100 p-4 rounded-full inline-block mb-4">
-                            <AlertTriangle className="h-12 w-12 text-red-500" />
+                        <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-full inline-block mb-4">
+                            <AlertTriangle className="h-12 w-12 text-red-500 dark:text-red-200" />
                         </div>
-                        <h2 className="text-xl font-semibold text-slate-900 mb-2">
+                        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
                             Something went wrong
                         </h2>
-                        <p className="text-slate-500 mb-6">
+                        <p className="text-slate-500 dark:text-slate-400 mb-6">
                             {this.state.error?.message || 'An unexpected error occurred. Please try again.'}
                         </p>
                         <div className="flex items-center justify-center gap-4">
@@ -64,7 +64,7 @@ export class ErrorBoundary extends Component<Props, State> {
                             </button>
                             <button
                                 onClick={this.handleGoHome}
-                                className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+                                className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                             >
                                 <Home className="h-4 w-4" />
                                 Go to Dashboard
@@ -72,10 +72,10 @@ export class ErrorBoundary extends Component<Props, State> {
                         </div>
                         {import.meta.env.DEV && this.state.error?.stack && (
                             <details className="mt-6 text-left">
-                                <summary className="cursor-pointer text-sm text-slate-500 hover:text-slate-700">
+                                <summary className="cursor-pointer text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700">
                                     Technical Details
                                 </summary>
-                                <pre className="mt-2 p-4 bg-slate-100 rounded-lg text-xs overflow-auto max-h-48">
+                                <pre className="mt-2 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs overflow-auto max-h-48 text-slate-800 dark:text-slate-200">
                                     {this.state.error.stack}
                                 </pre>
                             </details>

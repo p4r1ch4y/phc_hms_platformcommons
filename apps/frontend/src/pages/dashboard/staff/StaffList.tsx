@@ -54,8 +54,8 @@ const StaffList = () => {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Staff Management</h1>
-                    <p className="text-slate-500">Manage doctors, nurses, and other PHC staff.</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Staff Management</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Manage doctors, nurses, and other PHC staff.</p>
                 </div>
                 <Link
                     to="/dashboard/staff/new"
@@ -67,7 +67,7 @@ const StaffList = () => {
             </div>
 
             {/* Filters & Search */}
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-4">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Search className="h-5 w-5 text-slate-400" />
@@ -77,17 +77,17 @@ const StaffList = () => {
                         placeholder="Search by name or email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2"
+                        className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2"
                     />
                 </div>
-                <button className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium">
+                <button className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium">
                     <Filter className="h-4 w-4" />
                     Filters
                 </button>
             </div>
 
             {/* Staff List */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                 {loading ? (
                     <div className="p-8 text-center text-slate-500">Loading staff...</div>
                 ) : filteredStaff.length === 0 ? (
@@ -95,20 +95,20 @@ const StaffList = () => {
                         <div className="mx-auto h-12 w-12 text-slate-400">
                             <User className="h-12 w-12" />
                         </div>
-                        <h3 className="mt-2 text-sm font-medium text-slate-900">No staff found</h3>
-                        <p className="mt-1 text-sm text-slate-500">Add your first staff member.</p>
+                        <h3 className="mt-2 text-sm font-medium text-slate-900 dark:text-slate-100">No staff found</h3>
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Add your first staff member.</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-slate-100">
                         {filteredStaff.map((member) => (
-                            <div key={member.id} className="p-6 hover:bg-slate-50 transition-colors flex items-center justify-between">
+                            <div key={member.id} className="p-6 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                    <div className="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-200">
                                         <User className="h-5 w-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-slate-900">{member.name}</h3>
-                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                        <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">{member.name}</h3>
+                                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                                             <Mail className="h-3 w-3" />
                                             {member.email}
                                         </div>

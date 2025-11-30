@@ -91,11 +91,11 @@ const DashboardHome = () => {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                    <p className="text-slate-500">Welcome back, here's what's happening at your PHC today.</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Welcome back, here's what's happening at your PHC today.</p>
                 </div>
                 <div className="flex gap-3">
-                    <Link to="/dashboard/ocr" className="inline-flex items-center justify-center gap-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm">
+                    <Link to="/dashboard/ocr" className="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-100 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm">
                         <FileText className="h-5 w-5" />
                         Scan Report
                     </Link>
@@ -112,7 +112,7 @@ const DashboardHome = () => {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {statCards.map((stat) => (
-                        <div key={stat.name} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div key={stat.name} className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div className={`${stat.bg} p-3 rounded-lg`}>
                                     <stat.icon className={`h-6 w-6 ${stat.color}`} />
@@ -122,8 +122,8 @@ const DashboardHome = () => {
                                 </span>
                             </div>
                             <div className="mt-4">
-                                <h3 className="text-3xl font-bold text-slate-900">{stat.value}</h3>
-                                <p className="text-sm text-slate-500 mt-1">{stat.name}</p>
+                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{stat.value}</h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{stat.name}</p>
                             </div>
                         </div>
                     ))}
@@ -132,9 +132,9 @@ const DashboardHome = () => {
 
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Recent Patients */}
-                <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                        <h2 className="font-bold text-slate-900">Recent Patients</h2>
+                <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                    <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                        <h2 className="font-bold text-slate-900 dark:text-slate-100">Recent Patients</h2>
                         <Link to="/dashboard/patients" className="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</Link>
                     </div>
                     {loading ? (
@@ -142,7 +142,7 @@ const DashboardHome = () => {
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
-                                <thead className="bg-slate-50 text-slate-500">
+                                <thead className="bg-slate-50 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400">
                                     <tr>
                                         <th className="px-6 py-3 font-medium">Name</th>
                                         <th className="px-6 py-3 font-medium">ABHA ID</th>
@@ -150,15 +150,15 @@ const DashboardHome = () => {
                                         <th className="px-6 py-3 font-medium">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100">
+                                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                     {recentPatients.length === 0 ? (
                                         <tr><td colSpan={4} className="p-4 text-center text-slate-500">No patients found</td></tr>
                                     ) : (
                                         recentPatients.map((patient) => (
-                                            <tr key={patient.id} className="hover:bg-slate-50 transition-colors">
-                                                <td className="px-6 py-4 font-medium text-slate-900">{patient.firstName} {patient.lastName}</td>
-                                                <td className="px-6 py-4 text-slate-500">{patient.abhaId || '-'}</td>
-                                                <td className="px-6 py-4 text-slate-500">{patient.gender}</td>
+                                            <tr key={patient.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                                <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{patient.firstName} {patient.lastName}</td>
+                                                <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{patient.abhaId || '-'}</td>
+                                                <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{patient.gender}</td>
                                                 <td className="px-6 py-4">
                                                     <Link to={`/dashboard/patients/${patient.id}/vitals`} className="text-primary-600 hover:text-primary-700 font-medium">Record Vitals</Link>
                                                 </td>
@@ -172,7 +172,7 @@ const DashboardHome = () => {
                 </div>
 
                 {/* Quick Actions / Alerts */}
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                     <h2 className="font-bold text-slate-900 mb-4">Action Required</h2>
                     <div className="space-y-4">
                         {lowStockMedicines.length > 0 && lowStockMedicines.map((med: MedicineSummary) => (
@@ -200,7 +200,7 @@ const DashboardHome = () => {
                             </div>
                         ))}
                         {lowStockMedicines.length === 0 && highRiskPatients.length === 0 && (
-                            <div className="text-center text-slate-500 py-4 text-sm">
+                            <div className="text-center text-slate-500 dark:text-slate-400 py-4 text-sm">
                                 No urgent actions required.
                             </div>
                         )}

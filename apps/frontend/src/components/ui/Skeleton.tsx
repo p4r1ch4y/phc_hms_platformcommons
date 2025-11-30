@@ -3,7 +3,7 @@ interface SkeletonProps {
 }
 
 export const Skeleton = ({ className = '' }: SkeletonProps) => (
-    <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+    <div className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded ${className}`} />
 );
 
 interface TableSkeletonProps {
@@ -31,7 +31,7 @@ export const TableSkeleton = ({ rows = 5, columns = 4 }: TableSkeletonProps) => 
 );
 
 export const CardSkeleton = () => (
-    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
         <div className="flex items-center justify-between mb-4">
             <Skeleton className="h-12 w-12 rounded-lg" />
             <Skeleton className="h-4 w-16" />

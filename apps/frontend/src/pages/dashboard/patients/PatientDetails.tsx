@@ -120,7 +120,7 @@ const PatientDetails = () => {
         }
     };
 
-    if (loading) return <div className="p-8 text-center text-slate-500">Loading patient details...</div>;
+    if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading patient details...</div>;
     if (error || !patient) return <div className="p-8 text-center text-red-500">{error || 'Patient not found'}</div>;
 
     return (
@@ -135,7 +135,7 @@ const PatientDetails = () => {
                         <ArrowLeft className="h-5 w-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900">{patient.firstName} {patient.lastName}</h1>
+                            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{patient.firstName} {patient.lastName}</h1>
                         <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
                             <span className="flex items-center gap-1">
                                 <User className="h-3 w-3" /> {patient.gender}, {new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear()}y
@@ -150,7 +150,7 @@ const PatientDetails = () => {
                 </div>
                 <button
                     onClick={() => setIsEditModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium bg-white shadow-sm"
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium bg-white dark:bg-slate-800 shadow-sm"
                 >
                     <Edit2 className="h-4 w-4" />
                     Edit Profile
@@ -158,22 +158,22 @@ const PatientDetails = () => {
             </div>
 
             {/* Profile Card */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">ABHA ID</label>
-                        <div className="mt-1 font-mono text-slate-900">{patient.abhaId || 'Not Linked'}</div>
+                        <div className="mt-1 font-mono text-slate-900 dark:text-slate-100">{patient.abhaId || 'Not Linked'}</div>
                     </div>
                     <div>
                         <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Date of Birth</label>
-                        <div className="mt-1 text-slate-900 flex items-center gap-2">
+                        <div className="mt-1 text-slate-900 dark:text-slate-100 flex items-center gap-2">
                             <Calendar className="h-4 w-4 text-slate-400" />
                             {new Date(patient.dateOfBirth).toLocaleDateString()}
                         </div>
                     </div>
                     <div>
                         <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Address</label>
-                        <div className="mt-1 text-slate-900 flex items-center gap-2">
+                        <div className="mt-1 text-slate-900 dark:text-slate-100 flex items-center gap-2">
                             <MapPin className="h-4 w-4 text-slate-400" />
                             {patient.address || 'No address provided'}
                         </div>
@@ -182,13 +182,13 @@ const PatientDetails = () => {
             </div>
 
             {/* Tabs */}
-            <div className="border-b border-slate-200">
+            <div className="border-b border-slate-200 dark:border-slate-700">
                 <nav className="-mb-px flex gap-6">
                     <button
                         onClick={() => setActiveTab('vitals')}
                         className={`pb-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'vitals'
                             ? 'border-primary-500 text-primary-600'
-                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                            : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'
                             }`}
                     >
                         <Activity className="h-4 w-4" />
@@ -198,7 +198,7 @@ const PatientDetails = () => {
                         onClick={() => setActiveTab('consultations')}
                         className={`pb-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'consultations'
                             ? 'border-primary-500 text-primary-600'
-                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                            : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'
                             }`}
                     >
                         <FileText className="h-4 w-4" />
@@ -208,11 +208,11 @@ const PatientDetails = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-h-[300px]">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden min-h-[300px]">
                 {activeTab === 'vitals' && (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <thead className="bg-slate-50 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                                 <tr>
                                     <th className="px-6 py-3 font-medium">Date</th>
                                     <th className="px-6 py-3 font-medium">BP</th>
@@ -223,7 +223,7 @@ const PatientDetails = () => {
                                     <th className="px-6 py-3 font-medium">Risk Level</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {patient.vitals.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
@@ -232,21 +232,21 @@ const PatientDetails = () => {
                                     </tr>
                                 ) : (
                                     patient.vitals.map((vital) => (
-                                        <tr key={vital.id} className="hover:bg-slate-50">
-                                            <td className="px-6 py-4 text-slate-500">
+                                        <tr key={vital.id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
+                                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                                                 {new Date(vital.recordedAt).toLocaleString()}
                                             </td>
-                                            <td className="px-6 py-4 font-medium text-slate-900">{vital.bloodPressure || '-'}</td>
-                                            <td className="px-6 py-4">{vital.pulse ? `${vital.pulse} bpm` : '-'}</td>
-                                            <td className="px-6 py-4">{vital.temperature ? `${vital.temperature}°F` : '-'}</td>
-                                            <td className="px-6 py-4">{vital.spo2 ? `${vital.spo2}%` : '-'}</td>
-                                            <td className="px-6 py-4">{vital.bloodSugar ? `${vital.bloodSugar} mg/dL` : '-'}</td>
+                                            <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{vital.bloodPressure || '-'}</td>
+                                            <td className="px-6 py-4 dark:text-slate-100">{vital.pulse ? `${vital.pulse} bpm` : '-'}</td>
+                                            <td className="px-6 py-4 dark:text-slate-100">{vital.temperature ? `${vital.temperature}°F` : '-'}</td>
+                                            <td className="px-6 py-4 dark:text-slate-100">{vital.spo2 ? `${vital.spo2}%` : '-'}</td>
+                                            <td className="px-6 py-4 dark:text-slate-100">{vital.bloodSugar ? `${vital.bloodSugar} mg/dL` : '-'}</td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRiskColor(vital.riskLevel)}`}>
                                                     {vital.riskLevel}
                                                 </span>
                                                 {vital.triageNote && (
-                                                    <div className="text-xs text-slate-500 mt-1 max-w-xs truncate" title={vital.triageNote}>
+                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs truncate" title={vital.triageNote}>
                                                         {vital.triageNote}
                                                     </div>
                                                 )}
@@ -262,7 +262,7 @@ const PatientDetails = () => {
                 {activeTab === 'consultations' && (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <thead className="bg-slate-50 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                                 <tr>
                                     <th className="px-6 py-3 font-medium">Date</th>
                                     <th className="px-6 py-3 font-medium">Diagnosis</th>
@@ -271,7 +271,7 @@ const PatientDetails = () => {
                                     <th className="px-6 py-3 font-medium text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {patient.consultations.length === 0 ? (
                                     <tr>
                                         <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
@@ -280,12 +280,12 @@ const PatientDetails = () => {
                                     </tr>
                                 ) : (
                                     patient.consultations.map((consultation) => (
-                                        <tr key={consultation.id} className="hover:bg-slate-50">
-                                            <td className="px-6 py-4 text-slate-500">
+                                        <tr key={consultation.id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
+                                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                                                 {new Date(consultation.createdAt).toLocaleDateString()}
                                             </td>
-                                            <td className="px-6 py-4 font-medium text-slate-900">{consultation.diagnosis || '-'}</td>
-                                            <td className="px-6 py-4 text-slate-600 max-w-xs truncate" title={consultation.prescription}>
+                                            <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{consultation.diagnosis || '-'}</td>
+                                            <td className="px-6 py-4 text-slate-600 dark:text-slate-300 max-w-xs truncate" title={consultation.prescription}>
                                                 {consultation.prescription || '-'}
                                             </td>
                                             <td className="px-6 py-4">
@@ -298,7 +298,7 @@ const PatientDetails = () => {
                                                 {consultation.status === 'PENDING' && (
                                                     <button
                                                         onClick={() => handleUpdateStatus(consultation.id, 'COMPLETED')}
-                                                        className="text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded hover:bg-primary-100 transition-colors"
+                                                        className="text-xs bg-primary-50 dark:bg-primary-900/10 text-primary-700 px-2 py-1 rounded hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
                                                     >
                                                         Mark Complete
                                                     </button>
@@ -316,9 +316,9 @@ const PatientDetails = () => {
             {/* Edit Modal */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-md w-full p-6">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-slate-900">Edit Patient Details</h2>
+                            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Edit Patient Details</h2>
                             <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                                 <X className="h-5 w-5" />
                             </button>

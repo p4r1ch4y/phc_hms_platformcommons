@@ -47,8 +47,8 @@ const Patients = () => {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Patients</h1>
-                    <p className="text-slate-500">Manage patient records and registrations.</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Patients</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Manage patient records and registrations.</p>
                 </div>
                 <Link
                     to="/dashboard/patients/new"
@@ -60,7 +60,7 @@ const Patients = () => {
             </div>
 
             {/* Filters & Search */}
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-4">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Search className="h-5 w-5 text-slate-400" />
@@ -70,7 +70,7 @@ const Patients = () => {
                         placeholder="Search by name, ABHA ID, or phone..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 py-2"
+                        className="block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 py-2"
                     />
                 </div>
                 <button className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium">
@@ -80,7 +80,7 @@ const Patients = () => {
             </div>
 
             {/* Patients Table */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                 {loading ? (
                     <div className="p-8 text-center text-slate-500">Loading patients...</div>
                 ) : error ? (
@@ -90,13 +90,13 @@ const Patients = () => {
                         <div className="mx-auto h-12 w-12 text-slate-400">
                             <Users className="h-12 w-12" />
                         </div>
-                        <h3 className="mt-2 text-sm font-medium text-slate-900">No patients found</h3>
-                        <p className="mt-1 text-sm text-slate-500">Get started by registering a new patient.</p>
+                        <h3 className="mt-2 text-sm font-medium text-slate-900 dark:text-slate-100">No patients found</h3>
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Get started by registering a new patient.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-slate-50 text-slate-500">
+                            <thead className="bg-slate-50 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400">
                                 <tr>
                                     <th className="px-6 py-3 font-medium">Name</th>
                                     <th className="px-6 py-3 font-medium">ABHA ID</th>
@@ -106,23 +106,23 @@ const Patients = () => {
                                     <th className="px-6 py-3 font-medium text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {filteredPatients.map((patient) => (
-                                    <tr key={patient.id} className="hover:bg-slate-50 transition-colors">
+                                    <tr key={patient.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                         <td className="px-6 py-4">
-                                            <div className="font-medium text-slate-900">{patient.firstName} {patient.lastName}</div>
-                                            <div className="text-xs text-slate-500">{patient.address || 'No address'}</div>
+                                            <div className="font-medium text-slate-900 dark:text-slate-100">{patient.firstName} {patient.lastName}</div>
+                                            <div className="text-xs text-slate-500 dark:text-slate-400">{patient.address || 'No address'}</div>
                                         </td>
-                                        <td className="px-6 py-4 font-mono text-slate-600">
+                                        <td className="px-6 py-4 font-mono text-slate-600 dark:text-slate-300">
                                             {patient.abhaId || '-'}
                                         </td>
-                                        <td className="px-6 py-4 text-slate-600">
+                                        <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                                             {patient.gender}, {new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear()}y
                                         </td>
-                                        <td className="px-6 py-4 text-slate-600">
+                                        <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                                             {patient.phone || '-'}
                                         </td>
-                                        <td className="px-6 py-4 text-slate-500">
+                                        <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                                             {new Date(patient.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 text-right">

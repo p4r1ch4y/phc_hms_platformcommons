@@ -12,11 +12,13 @@ COPY packages/database ./packages/database
 
 # Copy service source
 COPY apps/api-gateway ./apps/api-gateway
+COPY scripts/start-and-migrate.sh /app/start-and-migrate.sh
 
 # Install dependencies
 RUN npm install
 
 # Generate Prisma Client
+RUN npm run -w packages/database generate || true
 WORKDIR /app/packages/database
 RUN npm run build
 
@@ -25,7 +27,7 @@ WORKDIR /app/apps/api-gateway
 RUN npm run build
 
 # Production image
-FROM node:18-bullseye
+FROM node:20-bullseye
 
 WORKDIR /app
 
@@ -34,9 +36,13 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/api-gateway ./apps/api-gateway
+COPY --from=builder /app/start-and-migrate.sh /app/start-and-migrate.sh
 
 WORKDIR /app/apps/api-gateway
 
+ENV APP_DIR=/app/apps/api-gateway
+RUN chmod +x /app/start-and-migrate.sh
+
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+CMD ["sh", "/app/start-and-migrate.sh"]

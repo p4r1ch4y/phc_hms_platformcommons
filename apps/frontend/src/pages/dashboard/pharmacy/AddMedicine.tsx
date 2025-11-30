@@ -66,19 +66,19 @@ const AddMedicine = () => {
                     <ArrowLeft className="h-5 w-5 text-slate-500" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Add New Medicine</h1>
-                    <p className="text-slate-500">Register a new medicine and add initial stock.</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Add New Medicine</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Register a new medicine and add initial stock.</p>
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 space-y-6">
                 <div className="grid grid-cols-1 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Medicine Name</label>
                         <input
                             type="text"
                             required
-                            className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500"
+                            className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500"
                             value={formData.name}
                             onChange={e => setFormData({ ...formData, name: e.target.value })}
                         />
@@ -98,7 +98,7 @@ const AddMedicine = () => {
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Unit Type</label>
                             <select
-                                className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500"
+                                className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500"
                                 value={formData.unit}
                                 onChange={e => setFormData({ ...formData, unit: e.target.value })}
                             >
@@ -114,7 +114,7 @@ const AddMedicine = () => {
                             <input
                                 type="number"
                                 required
-                                className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500"
+                                className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500"
                                 value={formData.lowStockThreshold}
                                 onChange={e => setFormData({ ...formData, lowStockThreshold: e.target.value })}
                             />
@@ -122,14 +122,14 @@ const AddMedicine = () => {
                     </div>
 
                     <div className="border-t border-slate-100 pt-6">
-                        <h3 className="text-sm font-medium text-slate-900 mb-4">Initial Batch Details</h3>
+                        <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-4">Initial Batch Details</h3>
                         <div className="grid grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Batch Number</label>
                                 <input
                                     type="text"
                                     required
-                                    className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500"
+                                    className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500"
                                     value={formData.batchNumber}
                                     onChange={e => setFormData({ ...formData, batchNumber: e.target.value })}
                                 />

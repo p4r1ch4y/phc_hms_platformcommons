@@ -117,15 +117,15 @@ const NewConsultation = () => {
                     <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">New Consultation</h1>
-                    <p className="text-slate-500">Diagnose and prescribe for a patient.</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">New Consultation</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Diagnose and prescribe for a patient.</p>
                 </div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Patient Selection */}
                 <div className="lg:col-span-1 space-y-4">
-                    <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                             <User className="h-5 w-5 text-primary-600" />
                             Select Patient
@@ -134,16 +134,16 @@ const NewConsultation = () => {
                         {!selectedPatient ? (
                             <div className="space-y-4">
                                 {/* Search Mode Toggle */}
-                                <div className="flex bg-slate-100 p-1 rounded-lg">
+                                <div className="flex bg-slate-100 dark:bg-slate-900/40 p-1 rounded-lg">
                                     <button
                                         onClick={() => setIsGlobalSearch(false)}
-                                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${!isGlobalSearch ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${!isGlobalSearch ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
                                     >
                                         Local Search
                                     </button>
                                     <button
                                         onClick={() => setIsGlobalSearch(true)}
-                                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-1 ${isGlobalSearch ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-1 ${isGlobalSearch ? 'bg-white dark:bg-slate-800 text-primary-600 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
                                     >
                                         <Globe className="h-3 w-3" />
                                         Global Search
@@ -157,14 +157,14 @@ const NewConsultation = () => {
                                         placeholder={isGlobalSearch ? "Enter exact ABHA ID..." : "Search name or ABHA ID..."}
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-9 rounded-lg border-slate-300 text-sm focus:ring-primary-500 focus:border-primary-500"
+                                        className="w-full pl-9 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm focus:ring-primary-500 focus:border-primary-500"
                                     />
                                 </div>
 
                                 <div className="max-h-60 overflow-y-auto space-y-2">
                                     {searching ? (
-                                        <div className="text-center text-xs text-slate-500 py-2">Searching...</div>
-                                    ) : patients.length > 0 ? (
+                                            <div className="text-center text-xs text-slate-500 dark:text-slate-400 py-2">Searching...</div>
+                                        ) : patients.length > 0 ? (
                                         patients.map(patient => (
                                             <button
                                                 key={patient.id}
@@ -173,7 +173,7 @@ const NewConsultation = () => {
                                                     setPatients([]);
                                                     setSearchTerm('');
                                                 }}
-                                                className="w-full text-left p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all group"
+                                                className="w-full text-left p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all group"
                                             >
                                                 <div className="font-medium text-slate-900 group-hover:text-primary-600">
                                                     {patient.firstName} {patient.lastName}
@@ -199,7 +199,7 @@ const NewConsultation = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-primary-50 rounded-lg p-4 border border-primary-100">
+                            <div className="bg-primary-50 dark:bg-primary-900/10 rounded-lg p-4 border border-primary-100 dark:border-primary-800">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <div className="font-bold text-primary-900">
@@ -209,7 +209,7 @@ const NewConsultation = () => {
                                             {selectedPatient.abhaId}
                                         </div>
                                         {selectedPatient.homePhc && (
-                                            <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 rounded bg-white text-primary-700 text-xs font-medium border border-primary-100">
+                                            <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 rounded bg-white dark:bg-slate-800 text-primary-700 text-xs font-medium border border-primary-100 dark:border-primary-800">
                                                 <Globe className="h-3 w-3" />
                                                 From: {selectedPatient.homePhc}
                                             </div>
@@ -229,7 +229,7 @@ const NewConsultation = () => {
 
                 {/* Consultation Form */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                         <form onSubmit={handleSubmit} className="p-6 space-y-6">
                             {error && (
                                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -251,7 +251,7 @@ const NewConsultation = () => {
                                     rows={3}
                                     value={formData.diagnosis}
                                     onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
-                                    className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                                    className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                     placeholder="e.g. Acute Viral Fever, High Temperature, Body Ache"
                                     required
                                 />
@@ -266,7 +266,7 @@ const NewConsultation = () => {
                                     rows={4}
                                     value={formData.prescription}
                                     onChange={(e) => setFormData({ ...formData, prescription: e.target.value })}
-                                    className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm font-mono"
+                                    className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm font-mono"
                                     placeholder="Paracetamol 500mg - 1-0-1 - 3 days&#10;Cetirizine 10mg - 0-0-1 - 3 days"
                                     required
                                 />
@@ -281,16 +281,16 @@ const NewConsultation = () => {
                                     rows={2}
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                    className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                                    className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                     placeholder="Additional observations..."
                                 />
                             </div>
 
-                            <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
+                            <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100 dark:border-slate-700">
                                 <button
                                     type="button"
                                     onClick={() => navigate('/dashboard/consultations')}
-                                    className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                    className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                                 >
                                     Cancel
                                 </button>

@@ -36,4 +36,36 @@ api.interceptors.request.use(
     }
 );
 
+// Mark backend availability on responses
+api.interceptors.response.use(
+    (response) => {
+        try { localStorage.setItem('backendAvailable', 'true'); } catch (e) { /* ignore */ }
+        return response;
+    },
+    (error) => {
+        // Network errors (no response) likely mean backend/gateway is down
+        if (!error.response) {
+            try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
+            console.error('API network error: backend may be offline', error);
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default api;
+
+// Health check helper - try /health and set a local flag
+export const checkBackendHealth = async (): Promise<boolean> => {
+    try {
+        const resp = await api.get('/health');
+        if (resp.status === 200) {
+            try { localStorage.setItem('backendAvailable', 'true'); } catch (e) { /* ignore */ }
+            return true;
+        }
+    } catch (err) {
+        try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
+        return false;
+    }
+    try { localStorage.setItem('backendAvailable', 'false'); } catch (e) { /* ignore */ }
+    return false;
+};
