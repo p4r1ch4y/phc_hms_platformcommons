@@ -5,6 +5,7 @@ import {
     authorize, 
     validateBody, 
     LoginSchema, 
+    RegisterSchema,
     StaffSchema,
     authRateLimiter,
     registrationRateLimiter,

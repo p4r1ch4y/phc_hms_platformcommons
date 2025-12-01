@@ -316,7 +316,7 @@ export const getPatientStats = async (req: Request, res: Response) => {
         res.json({
             totalPatients,
             newPatients,
-            genderDistribution: genderStats.map(g => ({ name: g.gender, value: g._count.gender })),
+            genderDistribution: genderStats.map((g) => ({ name: g.gender, value: g._count.gender })),
             ageDistribution: Object.entries(ageGroups).map(([name, value]) => ({ name, value }))
         });
     } catch (error) {

@@ -29,6 +29,33 @@ interface MedicineWithStock extends MedicineWithBatches {
     status?: string;
 }
 
+// Type definitions for Prisma query results
+interface Batch {
+    id: string;
+    medicineId: string;
+    batchNumber: string;
+    expiryDate: Date;
+    quantity: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+interface MedicineWithBatches {
+    id: string;
+    name: string;
+    manufacturer: string | null;
+    unit: string;
+    lowStockThreshold: number;
+    createdAt: Date;
+    updatedAt: Date;
+    batches: Batch[];
+}
+
+interface MedicineWithStock extends MedicineWithBatches {
+    totalStock: number;
+    status?: string;
+}
+
 export const addMedicine = async (req: Request, res: Response) => {
     try {
         console.log('Add Medicine Request:', req.body);
