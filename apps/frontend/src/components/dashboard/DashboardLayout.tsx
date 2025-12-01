@@ -48,6 +48,7 @@ const DashboardLayout = () => {
 
     const { theme, toggleTheme } = useTheme();
     const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('token'));
     const [canInstall, setCanInstall] = useState(false);
 
     useEffect(() => {
@@ -85,6 +86,9 @@ const DashboardLayout = () => {
     // Check backend health on mount
     useEffect(() => {
         let mounted = true;
+        // initial check + periodic polling every 30s
+        let interval: ReturnType<typeof setInterval> | undefined;
+
         (async () => {
             try {
                 const ok = await checkBackendHealth();
@@ -92,12 +96,27 @@ const DashboardLayout = () => {
             } catch (e) {
                 if (mounted) setBackendAvailable(false);
             }
+
+            interval = setInterval(async () => {
+                try {
+                    const ok = await checkBackendHealth();
+                    if (mounted) setBackendAvailable(ok);
+                } catch (e) {
+                    if (mounted) setBackendAvailable(false);
+                }
+                // refresh auth state as well
+                if (mounted) setIsAuthenticated(!!localStorage.getItem('token'));
+            }, 30_000);
         })();
-        return () => { mounted = false; };
+
+        return () => {
+            mounted = false;
+            if (interval) clearInterval(interval);
+        };
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans flex">
+        <div className="min-h-screen flex">
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div
@@ -199,12 +218,22 @@ const DashboardLayout = () => {
                             <Bell className="h-6 w-6" />
                             <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>
                         </button>
-                        {/* Backend availability notice */}
-                        {backendAvailable === false && (
-                            <div className="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
-                                Backend offline
+                        {/* Health & Auth status */}
+                        <div className="hidden sm:flex items-center gap-2">
+                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${backendAvailable === false ? 'bg-red-100 text-red-700' : backendAvailable === true ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}`}>
+                                <span className={`h-2.5 w-2.5 rounded-full ${backendAvailable === false ? 'bg-red-600' : backendAvailable === true ? 'bg-green-600' : 'bg-slate-400'}`}></span>
+                                <span>{backendAvailable === true ? 'Backend online' : backendAvailable === false ? 'Backend offline' : 'Checking backend'}</span>
                             </div>
-                        )}
+
+                            <button
+                                onClick={() => { if (!isAuthenticated) navigate('/login'); }}
+                                title={isAuthenticated ? 'Signed in' : 'Not signed in - click to login'}
+                                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${isAuthenticated ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-800 hover:bg-yellow-100'}`}
+                            >
+                                <span className={`h-2.5 w-2.5 rounded-full ${isAuthenticated ? 'bg-green-600' : 'bg-yellow-600'}`}></span>
+                                <span>{isAuthenticated ? 'Signed in' : 'Not signed in'}</span>
+                            </button>
+                        </div>
                         {/* PWA install button - shown when prompt available and user logged in */}
                         {canInstall && (
                             <button

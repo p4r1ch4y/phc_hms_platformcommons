@@ -106,9 +106,9 @@ const Pharmacy = () => {
                             <div key={item.id} className="p-6 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                            <Package className="h-5 w-5" />
-                                        </div>
+                                                            <div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-slate-700 flex items-center justify-center text-blue-600 dark:text-blue-200">
+                                                                <Package className="h-5 w-5" />
+                                                            </div>
                                         <div>
                                             <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">{item.name}</h3>
                                             <p className="text-xs text-slate-500 dark:text-slate-400">{item.manufacturer} • {item.unit}</p>
@@ -126,7 +126,7 @@ const Pharmacy = () => {
                                 </div>
 
                                 {/* Batches */}
-                                <div className="ml-14 bg-slate-50 rounded-lg p-3 text-xs">
+                                <div className="ml-14 bg-slate-50 dark:bg-slate-900 rounded-lg p-3 text-xs">
                                     <div className="grid grid-cols-3 gap-4 font-medium text-slate-500 mb-2">
                                         <div>Batch No.</div>
                                         <div>Expiry Date</div>
@@ -134,7 +134,7 @@ const Pharmacy = () => {
                                     </div>
                                     <div className="space-y-2">
                                         {item.batches.map((batch) => (
-                                            <div key={batch.id} className="grid grid-cols-3 gap-4 text-slate-700">
+                                            <div key={batch.id} className="grid grid-cols-3 gap-4 text-slate-700 dark:text-slate-200">
                                                 <div className="font-mono">{batch.batchNumber}</div>
                                                 <div className={new Date(batch.expiryDate) < new Date() ? 'text-red-600 font-medium' : ''}>
                                                     {new Date(batch.expiryDate).toLocaleDateString()}

@@ -26,6 +26,7 @@ services:
     ports:
       - "8000:3000"
     environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/phc_hms"
       PORT: "3000"
       AUTH_SERVICE_URL: "http://auth-service:3001"
       TENANT_SERVICE_URL: "http://tenant-service:3002"
@@ -163,6 +164,8 @@ services:
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
+      args:
+        VITE_API_URL: "http://localhost:8000/"
     ports:
       - "5174:80"
     depends_on:

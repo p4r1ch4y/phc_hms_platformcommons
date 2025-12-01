@@ -1,8 +1,8 @@
-import { PrismaClient as PharmacyClient } from '@phc/database';
+import { PharmacyClient } from '@phc/database';
 
-const clients: Record<string, PharmacyClient> = {};
+const clients: Record<string, any> = {};
 
-export const getTenantClient = (tenantSlug: string): PharmacyClient => {
+export const getTenantClient = (tenantSlug: string): any => {
     if (!clients[tenantSlug]) {
         // In a real scenario, we would construct the database URL dynamically based on the tenant
         // For this hackathon/MVP, we might use the same DB but different schemas

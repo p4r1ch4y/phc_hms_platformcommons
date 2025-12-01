@@ -17,6 +17,10 @@ RUN npm run -w packages/database generate || true
 WORKDIR /app/packages/database
 RUN npm run build
 
+# Build common package so runtime has `dist/`
+WORKDIR /app/packages/common
+RUN npm run build
+
 WORKDIR /app/apps/patient-service
 RUN npm run build
 
@@ -37,4 +41,4 @@ RUN chmod +x /app/start-and-migrate.sh
 
 EXPOSE 3003
 
-CMD ["sh", "/app/start-and-migrate.sh"]
+CMD ["bash", "/app/start-and-migrate.sh"]

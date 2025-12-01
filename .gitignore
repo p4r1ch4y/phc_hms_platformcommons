@@ -22,7 +22,8 @@ dist
 .env.development.local
 .env.test.local
 .env.production.local
-
+.env.deploy
+apps/frontend/.env
 docs/misc/
 
 # Logs
@@ -44,3 +45,7 @@ packages/database/generated
 
 *.ps1
 *.sql
+
+scripts/
+/deploy/
+*.local

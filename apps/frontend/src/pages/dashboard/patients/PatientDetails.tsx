@@ -130,13 +130,13 @@ const PatientDetails = () => {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard/patients')}
-                        className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"
+                        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-200 transition-colors"
                     >
                         <ArrowLeft className="h-5 w-5" />
                     </button>
                     <div>
                             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{patient.firstName} {patient.lastName}</h1>
-                        <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
+                        <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mt-1">
                             <span className="flex items-center gap-1">
                                 <User className="h-3 w-3" /> {patient.gender}, {new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear()}y
                             </span>
@@ -326,51 +326,51 @@ const PatientDetails = () => {
                         <form onSubmit={handleUpdatePatient} className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700">First Name</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">First Name</label>
                                     <input
                                         type="text"
                                         value={editForm.firstName}
                                         onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                                        className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                        className="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700">Last Name</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Last Name</label>
                                     <input
                                         type="text"
                                         value={editForm.lastName}
                                         onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                                        className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                        className="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                                         required
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700">Phone Number</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Phone Number</label>
                                 <input
                                     type="tel"
                                     value={editForm.phone}
                                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                    className="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700">Address</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Address</label>
                                 <textarea
                                     value={editForm.address}
                                     onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
                                     rows={2}
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                    className="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700">ABHA ID</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">ABHA ID</label>
                                 <input
                                     type="text"
                                     value={editForm.abhaId}
                                     onChange={(e) => setEditForm({ ...editForm, abhaId: e.target.value })}
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm font-mono"
+                                    className="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm font-mono"
                                     placeholder="XX-XXXX-XXXX-XXXX"
                                 />
                             </div>
@@ -378,7 +378,7 @@ const PatientDetails = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditModalOpen(false)}
-                                    className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+                                    className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
                                 >
                                     Cancel
                                 </button>

@@ -43,4 +43,4 @@ RUN chmod +x /app/start-and-migrate.sh
 
 EXPOSE 3001
 
-CMD ["sh", "/app/start-and-migrate.sh"]
+CMD ["bash", "/app/start-and-migrate.sh"]

@@ -2,6 +2,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Accept a Vite API URL at build time (defaults to localhost:8000)
+ARG VITE_API_URL="http://localhost:8000/"
+ENV VITE_API_URL=${VITE_API_URL}
+
 # Copy root files
 COPY package*.json ./
 COPY tsconfig.json ./

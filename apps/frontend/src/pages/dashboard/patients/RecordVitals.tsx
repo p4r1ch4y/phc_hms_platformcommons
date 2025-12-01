@@ -103,19 +103,19 @@ const RecordVitals = () => {
             <div className="flex items-center gap-4">
                 <button
                     onClick={() => navigate('/dashboard/patients')}
-                    className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"
+                    className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-200 transition-colors"
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Record Vitals</h1>
-                    <p className="text-slate-500">Enter vital signs for Patient ID: {patientId}</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Record Vitals</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Enter vital signs for Patient ID: {patientId}</p>
                 </div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
                 <div className="md:col-span-2 space-y-6">
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-8">
                             {error && (
                                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -125,7 +125,7 @@ const RecordVitals = () => {
 
                             <div className="grid sm:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
                                         <Thermometer className="h-4 w-4 text-slate-400" />
                                         Temperature (°F)
                                     </label>
@@ -136,13 +136,13 @@ const RecordVitals = () => {
                                         required
                                         value={formData.temperature}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="98.6"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
                                         <Activity className="h-4 w-4 text-slate-400" />
                                         Blood Pressure (mmHg)
                                     </label>
@@ -152,13 +152,13 @@ const RecordVitals = () => {
                                         required
                                         value={formData.bloodPressure}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="120/80"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
                                         <Heart className="h-4 w-4 text-slate-400" />
                                         Pulse (bpm)
                                     </label>
@@ -168,13 +168,13 @@ const RecordVitals = () => {
                                         required
                                         value={formData.pulse}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="72"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
                                         <Droplet className="h-4 w-4 text-slate-400" />
                                         Blood Sugar (mg/dL)
                                     </label>
@@ -184,13 +184,13 @@ const RecordVitals = () => {
                                         name="bloodSugar"
                                         value={formData.bloodSugar}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="110"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
                                         <Scale className="h-4 w-4 text-slate-400" />
                                         Weight (kg)
                                     </label>
@@ -201,13 +201,13 @@ const RecordVitals = () => {
                                         required
                                         value={formData.weight}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="70"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
                                         <Ruler className="h-4 w-4 text-slate-400" />
                                         Height (cm)
                                     </label>
@@ -218,14 +218,14 @@ const RecordVitals = () => {
                                         required
                                         value={formData.height}
                                         onChange={handleChange}
-                                        className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
+                                        className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm py-2.5"
                                         placeholder="170"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center justify-between">
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 flex items-center justify-between">
                                     Clinical Observations / Triage Notes
                                     <VoiceInput onTranscript={(text) => setFormData(prev => ({ ...prev, triageNote: prev.triageNote + (prev.triageNote ? ' ' : '') + text }))} />
                                 </label>
@@ -234,16 +234,16 @@ const RecordVitals = () => {
                                     name="triageNote"
                                     value={formData.triageNote}
                                     onChange={(e) => setFormData({ ...formData, triageNote: e.target.value })}
-                                    className="block w-full rounded-lg border-slate-300 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                                    className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-slate-100 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                     placeholder="Additional observations..."
                                 />
                             </div>
 
-                            <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
+                                <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100 dark:border-slate-700">
                                 <button
                                     type="button"
                                     onClick={() => navigate('/dashboard/patients')}
-                                    className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                    className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                                 >
                                     Cancel
                                 </button>
@@ -262,7 +262,7 @@ const RecordVitals = () => {
 
                 <div className="space-y-6">
                     {/* Risk Assessment Card */}
-                    <div className={`rounded-xl border p-6 ${risk ? getRiskColor(risk.riskLevel) : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                            <div className={`rounded-xl border p-6 ${risk ? getRiskColor(risk.riskLevel) : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200'}`}>
                         <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
                             <Activity className="h-5 w-5" />
                             Smart Triage

@@ -137,6 +137,20 @@ See `docs/system_design.md` for the full architecture and diagrams.
 - Database on Supabase free-tier PostgreSQL.
 - GitHub Actions for CI/CD (linting, tests, and automated deployments).
 
+Frontend is Deployed on vercel : https://phccommons.vercel.app/
+
+Backend Services are hosted as Azure Container : 
+
+All Docker images can be fetched from :
+
+Docker Hub :  https://hub.docker.com/r/notsubrata/
+
+Example : 
+with docker cli
+
+```
+docker pull notsubrata/phc-frontend:v1
+```
 
 Notes
 - When running in Docker Compose, Postgres is mapped to host port `5434` (see `docker-compose.yml`).

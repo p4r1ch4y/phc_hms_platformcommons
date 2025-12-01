@@ -22,6 +22,10 @@ RUN npm run -w packages/database generate || true
 WORKDIR /app/packages/database
 RUN npm run build
 
+# Build common package so runtime has `dist/`
+WORKDIR /app/packages/common
+RUN npm run build
+
 # Build service
 WORKDIR /app/apps/api-gateway
 RUN npm run build
@@ -45,4 +49,4 @@ RUN chmod +x /app/start-and-migrate.sh
 
 EXPOSE 3000
 
-CMD ["sh", "/app/start-and-migrate.sh"]
+CMD ["bash", "/app/start-and-migrate.sh"]

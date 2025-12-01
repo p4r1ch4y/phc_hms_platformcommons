@@ -2,6 +2,8 @@
 set -euo pipefail
 
 APP_DIR=${APP_DIR:-/app}
+RETRIES=${RETRIES:-30}
+SLEEP=${SLEEP:-2}
 
 echo "[start-and-migrate] Starting in app dir: $APP_DIR"
 
@@ -16,20 +18,13 @@ if [ -d "/app/packages/database" ]; then
   npx prisma migrate deploy || true
 fi
 
-echo "[start-and-migrate] Starting application at: $APP_DIR"
+echo "[start-and-migrate] Starting application directory: $APP_DIR"
 cd "$APP_DIR"
 
-exec node dist/index.js
-#!/bin/sh
-set -e
 
-RETRIES=30
-SLEEP=2
-
-echo "Starting DB migration helper"
-
+echo "[start-and-migrate] Running management migrations with retries (using npx in package directory)"
 i=0
-until npm run -w packages/database migrate:management; do
+until (cd /app/packages/database && npx prisma migrate dev --schema=./prisma/schema.prisma --name init_management); do
   i=$((i+1))
   echo "migrate:management failed (attempt $i/$RETRIES). Retrying in ${SLEEP}s..."
   if [ "$i" -ge "$RETRIES" ]; then
@@ -39,10 +34,10 @@ until npm run -w packages/database migrate:management; do
   sleep $SLEEP
 done
 
-# Push tenant schema
-
+echo "[start-and-migrate] Pushing tenant schema with retries (using npx in package directory)"
 i=0
-until npm run -w packages/database push:tenant; do
+if [ "${ALLOW_TENANT_PUSH:-false}" = "true" ]; then
+  until (cd /app/packages/database && npx prisma db push --schema=./prisma/tenant.prisma --accept-data-loss); do
   i=$((i+1))
   echo "push:tenant failed (attempt $i/$RETRIES). Retrying in ${SLEEP}s..."
   if [ "$i" -ge "$RETRIES" ]; then
@@ -51,7 +46,26 @@ until npm run -w packages/database push:tenant; do
   fi
   sleep $SLEEP
 done
+else
+  echo "[start-and-migrate] Skipping tenant schema push (ALLOW_TENANT_PUSH not set)."
+fi
 
-# Start the service
-echo "Migrations/push completed (or retried). Starting service..."
+# Ensure local workspace packages are built in the final image (some installs use symlinks)
+if [ ! -f "/app/node_modules/@phc/common/dist/index.js" ] && [ -d "/app/packages/common" ]; then
+  echo "[start-and-migrate] Detected missing @phc/common build in node_modules — building from source in /app/packages/common"
+  cd /app/packages/common
+  if [ -f package.json ]; then
+    npm run build || npx tsc -p tsconfig.json || true
+  fi
+  cd "$APP_DIR"
+fi
+
+# Ensure Node can resolve the workspace package by creating a node_modules symlink
+if [ ! -e "/app/node_modules/@phc/common" ] && [ -d "/app/packages/common" ]; then
+  echo "[start-and-migrate] Creating symlink /app/node_modules/@phc/common -> /app/packages/common"
+  mkdir -p /app/node_modules/@phc || true
+  ln -sfn /app/packages/common /app/node_modules/@phc/common || true
+fi
+
+echo "[start-and-migrate] Migrations/push completed (or retried). Starting service..."
 exec node dist/index.js
